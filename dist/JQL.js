@@ -4,7 +4,7 @@
  * @version    : 0.1.0
  * @author     : DerianAndre
  * @repository : https://github.com/DerianAndre/JQL.git
- * @built      : 16/4/2021
+ * @built      : 17/4/2021
  * @license    : MIT
  */
 (function (root, factory) {
@@ -21,37 +21,52 @@
 		root.JQL = factory();
 	}
 } (this, function () {
+		// Valid Operators
 		const OPERATORS = [
 			'=', '<', '>', '&', '|', '^', '+', '-', '*', '/', 
 			'==', '!=', '<=', '>=', '&&', '||',
 			'===', '!==',
 		];
+		// Make them regex ready
 		const OPS = OPERATORS.map(function(op) { return '\\' + op; }).join('|');
 
-		//Constructor function
+		// Constructor
 		function JQL(array) {
 			//Check arguments
-			if (!array)
-				throw new Error("Provided data is invalid");
-			if (!(array instanceof Array))
-				throw new Error("Provided data is not a valid array");
+			if (!array || !(array instanceof Array))
+				throw new Error("Data is invalid or is not a valid array");
 
-			//Set data on current variable
+			// Set data on current variable
 			this.items = array;
 
-			//Set function of prototype
+			// Set function of prototype
+			this.select = select;
 			this.where = where;
 			this.compare = compare;
-			this.result = result;
+
+			this.count = count;
+
+			// Return functions of items
+			// I like it this way because if forget things 😪
+			this.data = data;
+			this.array = data;
+			this.result = data;
+
+			// Loggin
+			// Debug like a pro 😉
+			this.log = log;
+			this.table = table;
+			this.dir = dir;
 			
-			//Return for chaining
+			// Return for chaining
 			return this;
 		}
 
+		// Compare: Compare an expression by a qery string or a function
 		function compare(expression, element) {
-			if(!expression || !element) return false;
+			if( (!expression && typeof expression !== 'string') || !element ) return false;
 
-			let boolean = false, matches = [];
+			let matches = [];
 			const	regex = new RegExp(`(\\w+) (${OPS}) (\\w+)`, 'gm');
 
 			// Get matches
@@ -72,65 +87,122 @@
 				key = matches[1],
 				op  = matches[2],
 				val = matches[3];
-			
+
+			if(!key || !op || !val) return false;
+			if(val == 'true')  val = true;
+			if(val == 'false') val = false;
+			if(/^\d+$/.test(val)) val = parseInt(val);
+
 			switch (op) {
-				// Equals
-				default: case '=': case '==':
-					if(element[key] == val) boolean = true;
+				//
+				default:
+					return false;
 				break;
-				// Different
+				//
+				case '=': case '==':
+					if(element[key] == val) return true;
+				break;
+				//
+				case '===':
+					if(element[key] == val) return true;
+				break;
+				//
 				case '!=':
-					if(element[key] != val) boolean = true;
+					if(element[key] != val) return true;
 				break;
-				// Different
+				//
 				case '!==':
-					if(element[key] !== val) boolean = true;
+					if(element[key] !== val) return true;
+				break;
+				//
+				case '!==':
+					if(element[key] !== val) return true;
+				break;
+				//
+				case '<':
+					if(element[key] < val) return true;
+				break;
+				//
+				case '<=':
+					if(element[key] <= val) return true;
+				break;
+				//
+				case '>':
+					if(element[key] > val) return true;
+				break;
+				//
+				case '>=':
+					if(element[key] >= val) return true;
 				break;
 			}
-
-			// Return
-			return boolean;
 		}
 
-		//#region "where"
-		//Select elements that match expression
+		function select(expression) {
+			//Check arguments
+			if (!expression) throw new Error("Expression is invalid");
+			
+			//Return for chaining
+			return new JQL(result);
+		}
+
+		// Where: Select elements that match expression by a qery string or a function
 		function where(expression) {
 			//Check arguments
 			if (!expression) throw new Error("Expression is invalid");
 			
 			//Define output array
-			var outData = [];
+			var result = [];
 
 			//For each element on data
 			for (var i = 0; i < this.items.length; i++) {
-
 				//Use function to obtain match
-				var doesMatch = compare(expression, this.items[i]);
+				if(typeof expression === 'string') {
+					var match = compare(expression, this.items[i]);
+				} else {
+					var match = expression(this.items[i]);
+				}
 				//If element match, append
-				if (doesMatch)
-					outData.push(this.items[i]);
+				if (match)
+					result.push(this.items[i]);
 			}
 
 			//Return for chaining
-			return new JQL(outData);
-
+			return new JQL(result);
 		}
-		//#endregion
 
-		//#region "result"
-		//Returns items
-		function result() {
+    // Count: Returns count of elements
+    function count() {
+			return this.items.length;
+		}
+
+		// Result: Returns items
+		function data() {
 			return this.items;
 		}
-		//#endregion
 
-		//Constructor instance
-		function constructor(arrayOfData) {
-			//Returns new instance of "JQL"
-			return new JQL(arrayOfData);
+		//#region Logging
+		// Dir: console.dir() for items
+		function dir() {
+			console.dir(this.items, { depth: null });
 		}
 
-		//Exports functions
+		// Log: console.log() for constructor
+		function log() {
+			console.log(this);
+		}
+
+		// Table: console.table() for items
+		function table(columns = false) {
+			console.table(this.items, columns);
+		}
+		//#endregion
+
+		// Constructor: Constructor instance
+		function constructor(array) {
+			return new JQL(array);
+		}
+
+		// Exports functions
 		return constructor;
 	})
 );
