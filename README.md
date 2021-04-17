@@ -36,8 +36,8 @@ Get data (items)
 Debug like a pro!
 ```
 	.dir()
-	.log()					// {Boolean}	items			Do a console.log() for: data / constructor
-	.table(columns)	// {String}		columns		Columns of the table you want to show
+	.log()		// {Boolean}	items	Do a console.log() for: data / constructor
+	.table(columns)	// {String}	columns	Columns of the table you want to show
 
 	// Log
 	// This will automatically console.log() the items
