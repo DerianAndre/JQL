@@ -7,6 +7,11 @@
  * @built      : 17/4/2021
  * @license    : MIT
  */
+//import antlr4		from 'antlr4';
+//import Lexer		from './antlr/JQLLexer.js';
+//import Parser		from './antlr/JQLParser.js';
+//import Listener from './antlr/JQLListener.js';
+
 (function (root, factory) {
 	//UMD - Universal Module Definition
 	if (typeof define === 'function' && define.amd) {
@@ -23,9 +28,11 @@
 } (this, function () {
 		// Valid Operators
 		const OPERATORS = [
-			'=', '<', '>', '&', '|', '^', '+', '-', '*', '/', 
-			'==', '!=', '<=', '>=', '&&', '||',
-			'===', '!==',
+			'~', '~~',
+			'=', '==', '===',
+			'!=', '!==',
+			'<', '>', 
+			'<=', '>=',
 		];
 		// Make them regex ready
 		const OPS = OPERATORS.map(function(op) { return '\\' + op; }).join('|');
@@ -36,33 +43,36 @@
 			if (!array || !(array instanceof Array))
 				throw new Error("Data is invalid or is not a valid array");
 
-			// Set data on current variable
+			// Data
+			// Very streight forward
 			this.items = array;
+			this.length = array.length;
 
-			// Set function of prototype
-			this.select = select;
-			this.where = where;
-			this.compare = compare;
+			// Functions
+			// The magica it's here
+			this.select=  select;
+			this.where=   where;
+			this.compare= compare;
 
-			this.count = count;
-
-			// Return functions of items
+			// Get data
 			// I like it this way because if forget things 😪
-			this.data = data;
-			this.array = data;
-			this.result = data;
+			this.data=   data;
+			this.array=  data;
+			this.result= data;
+			this.count=  count;
 
-			// Loggin
+			// Logging
 			// Debug like a pro 😉
-			this.log = log;
-			this.table = table;
-			this.dir = dir;
+			this.log=   log;
+			this.table= table;
+			this.dir=   dir;
 			
 			// Return for chaining
 			return this;
 		}
 
-		// Compare: Compare an expression by a qery string or a function
+		// Compare
+		// Compare an expression by a qery string or a function
 		function compare(expression, element) {
 			if( (!expression && typeof expression !== 'string') || !element ) return false;
 
@@ -82,72 +92,71 @@
 				});
 			}
 
-			// Check
+			// Set key, value and operator
 			let 
-				key = matches[1],
-				op  = matches[2],
-				val = matches[3];
+				key 	= matches[1],
+				op  	= matches[2],
+				value = matches[3];
 
-			if(!key || !op || !val) return false;
-			if(val == 'true')  val = true;
-			if(val == 'false') val = false;
-			if(/^\d+$/.test(val)) val = parseInt(val);
+			if(!key || !op || !value) return false;
+			if(value == 'true')  value = true;
+			if(value == 'false') value = false;
+			if(/^\d+$/.test(value)) value = parseInt(value);
 
-			switch (op) {
+			switch (op) {			
 				//
-				default:
-					return false;
+				case '~':
+					if(element[key].includes(value)) return true;
 				break;
 				//
 				case '=': case '==':
-					if(element[key] == val) return true;
+					if(element[key] == value) return true;
 				break;
 				//
 				case '===':
-					if(element[key] == val) return true;
+					if(element[key] === value) return true;
 				break;
 				//
 				case '!=':
-					if(element[key] != val) return true;
+					if(element[key] != value) return true;
 				break;
 				//
 				case '!==':
-					if(element[key] !== val) return true;
-				break;
-				//
-				case '!==':
-					if(element[key] !== val) return true;
+					if(element[key] !== value) return true;
 				break;
 				//
 				case '<':
-					if(element[key] < val) return true;
+					if(element[key] < value) return true;
 				break;
 				//
 				case '<=':
-					if(element[key] <= val) return true;
+					if(element[key] <= value) return true;
 				break;
 				//
 				case '>':
-					if(element[key] > val) return true;
+					if(element[key] > value) return true;
 				break;
 				//
 				case '>=':
-					if(element[key] >= val) return true;
+					if(element[key] >= value) return true;
 				break;
+				//
+				default: return false;
 			}
 		}
 
+		// Select
+		// Select keys (Equivalent to SELECT <args> FROM)
 		function select(expression) {
-			//Check arguments
-			if (!expression) throw new Error("Expression is invalid");
+			if (!expression) return new JQL(result);
 			
-			//Return for chaining
+			// Return for chaining
 			return new JQL(result);
 		}
 
 		// Where: Select elements that match expression by a qery string or a function
 		function where(expression) {
-			//Check arguments
+			// Check arguments
 			if (!expression) throw new Error("Expression is invalid");
 			
 			//Define output array
@@ -170,34 +179,41 @@
 			return new JQL(result);
 		}
 
-    // Count: Returns count of elements
+    // Count
+		// Returns length of the array
     function count() {
-			return this.items.length;
+			console.log(this.length);
 		}
 
-		// Result: Returns items
+		// Data
+		// Returns data
 		function data() {
 			return this.items;
 		}
 
 		//#region Logging
-		// Dir: console.dir() for items
+		// Dir
+		// console.dir() for items
 		function dir() {
 			console.dir(this.items, { depth: null });
 		}
 
-		// Log: console.log() for constructor
-		function log() {
-			console.log(this);
+		// Log
+		// console.log() for constructor
+		function log(items = true) {
+			if(typeof items === 'boolean' && items) console.log(this.items);
+			else console.log(this);
 		}
 
-		// Table: console.table() for items
+		// Table
+		// console.table() for items
 		function table(columns = false) {
 			console.table(this.items, columns);
 		}
 		//#endregion
 
-		// Constructor: Constructor instance
+		// Constructor
+		// Constructor instance
 		function constructor(array) {
 			return new JQL(array);
 		}

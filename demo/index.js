@@ -7,29 +7,30 @@ const variable = false;
 
 console.log('DATA')
 console.table(data);
-console.log('============================================')
-console.log('')
-
 // WHERE
-console.log('WHERE')
+console.log('\n\nWHERE')
 // With a query (simple operators like =, ==, ===, !=, !=, <, >, <=, >=)
-result = JQL(data).where(`${key} ${operator} ${variable}`);
-console.log(`query: WHERE ${key} ${operator} ${variable}`);
-console.log(result.result());
-console.log(result.count());
+console.log('query: WHERE ${key} ${operator} ${variable}');
+result = JQL(data).where(`${key} ${operator} ${variable}`).log(false);
+result = JQL(data).where(`${key} ${operator} ${variable}`).count();
+console.log('query: WHERE email ~ youtu.be');
+result = JQL(data).where(`email ~ youtu.be`).log();
+console.log('query: WHERE name ~ a');
+result = JQL(data).where(`name ~ a`).log();
+console.log('');
 
 // With a function
-result = JQL(data).where((i) => { return i[key] == variable; }).array();
+result = JQL(data).where((i) => { return i[key] == variable; });
 console.log(`function: ${key} == ${variable}`);
-console.log(result);
+result.log();
+console.log('');
 
 // Nesting
-console.log(`Nesting`);
+console.log(`\n\nNesting`);
 result = JQL(data)
 						.where(`${key} ${operator} ${variable}`)
 						.where(`id >= 6`)
-						.data();
-console.log(result);
+						.log()
 
 
 console.log('Logging');
