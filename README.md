@@ -11,66 +11,78 @@ Use the following command to build JQL ANTLR files
 ```
 	npm run antlr
 ```
-**(*)ANTLR COULD BE DROPPED BECAUSE OF SIZE ~500kb**
+**(*) ANTLR COULD BE DROPPED DUE TO SIZE ~ +400kb**
 
 # Operators
-Supported operators for exprresions are very basic and currently does not support logical operators (for now)
-Use a function for a more complex expression.
-| Operator type     |  Symbols                 |
-| ----------------- | ------------------------ |
+Supported operators for expressions are very basic. Use a function for a more complex predicate.
+
+| **Operator type** |  **Symbols**             |
+|-------------------|--------------------------|
 | **`Comparation`** | `~  =  ==  !=  ===  !==` |
 |                   | `<  >  <=  >=`           |
 | **`Logical`**     | `&& \|\|`                |
 
 
 # Functions
+
 ## Query
-```
-	.where(expression)	// {String, Function} expression What you want to compare
-	.count()
-```
+
+| **Function** | **Description**                                              | **Variable** | **Type**             | **Description (Var)**                                                         |
+|--------------|--------------------------------------------------------------|--------------|----------------------|-------------------------------------------------------------------------------|
+| `.select()`  | Retrieve only the JSON keys                                  | `expression` | `string`, `function` | Expression that you want to select and store into the variables               |
+| `.where()`   | Specify a search condition for the keys returned by a query. | `expression` | `string`, `function` | Combination of one or more predicates using the logical operator `&&` or `||` |
 
 ## Data
-Get data (items)
+Get that precious data
+
+| **Function**                           | **Description**                  |
+|----------------------------------------|----------------------------------|
+| `.data()` or `.array()` or `.result()` | Get the items of the constructor |
+| `.count()`                             | Get the items.lenght             |
+
+### `.data()` or `.array()` or `.result()`
 ```
-	.items || .data() || .array() || .result()
-
-	//Will produce the same
 	let result = JQL(JSON).items; // JQL(JSON).data();
-
 	console.log(result);
 	► (n) [{…}, {…}, {…}, …]
+```
 
+### `.count()`
+```
 	result.count(); // console.log(result.lenth);
 	► Length (n)
 ```
 
+
 ## Logging
 Debug like a pro!
+
+| **Function** | **Description**                                        | **Variable** | **Type**      | **Description (Var)**             |
+|--------------|--------------------------------------------------------|--------------|---------------|-----------------------------------|
+| `.dir()`     | Do a `console.dir()`                                   | `object`   | `object`        | Options                           |
+| `.log()`     | Do a `console.log()` for items or constructor function | `items`    | `boolean`       | Show constrcutor function (false) |
+| `.table()`   | Do a `console.table()`                                 | `columns`  | `array, string` | Columns to show                   |
+
+### `.log()`
 ```
-	.dir()
-	.log()		// {Boolean}	items	Do a console.log() for: data / constructor
-	.table(columns)	// {String}	columns	Columns of the table you want to show
-
-	// Log
-	// This will automatically console.log() the items
 	let result = JQL(JSON).log()
-
 	► (n) [{…}, {…}, {…}, …]
 
-	// This will console.log() the constructor function
 	let result = JQL(JSON).log(false);
-
-	► i {items: Array(4), length: 4, select: ƒ, where: ƒ, compare: ƒ, …}
-
-	// Table
-	let result = JQL(JSON).table(['id', 'email']);
+	► i {items: Array(4), length: 4, select: ƒ, where: ƒ, data: ƒ, …}
 ```
-**Will log this table:**
-| id  | email                        |
-| --- | ---------------------------- |
-| `0`   | `anelsen0@printfriendly.com` |
-| `1`   | `dmadgett1@youtu.be`         |
+
+### `.table()`
+```
+	let result = JQL(JSON).table(['id', 'email']);
+
+	| id | email                      |
+	|----| ---------------------------|
+	| 0  | anelsen0@printfriendly.com |
+	| 1  | dmadgett1@youtu.be         |
+	...
+	► Array(n)
+```
 
 
 # Why tho?

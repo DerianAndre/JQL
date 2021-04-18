@@ -11,11 +11,16 @@ console.table(data);
 console.log('\n\nWHERE')
 // With a query (simple operators like =, ==, ===, !=, !=, <, >, <=, >=)
 console.log('query: WHERE ${key} ${operator} ${variable}');
+result = JQL(data).where(`${key} ${operator} ${variable}`).dir();
+result = JQL(data).where(`${key} ${operator} ${variable}`).log();
 result = JQL(data).where(`${key} ${operator} ${variable}`).log(false);
 console.log('query: WHERE email ~ youtu.be');
+
 result = JQL(data).where(`${key} ${operator} ${variable}`).count();
+console.log(result);
 result = JQL(data).where(`${key} ${operator} ${variable}`).length;
 console.log(result);
+
 console.log('query: WHERE email ~ youtu.be');
 result = JQL(data).where(`email ~ youtu.be`).log();
 console.log('query: WHERE active = false');

@@ -225,7 +225,7 @@
 	// Count
 	// Returns length of the array
 	function count() {
-		console.log(this.length);
+		return this.length;
 	}
 
 	// Data
@@ -237,8 +237,9 @@
 	//#region Logging
 	// Dir
 	// console.dir() for items
-	function dir() {
-		console.dir(this.items, { depth: null });
+	function dir(object = false) {
+		console.dir(this.items, object);
+		return this.items;
 	}
 
 	// Log
@@ -246,12 +247,14 @@
 	function log(items = true) {
 		if(typeof items === 'boolean' && items) console.log(this.items);
 		else console.log(this);
+		
 	}
 
 	// Table
 	// console.table() for items
 	function table(columns = false) {
 		console.table(this.items, columns);
+		return this.items;
 	}
 	//#endregion
 
