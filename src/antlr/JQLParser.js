@@ -1,45 +1,47 @@
-// Generated from JQL.g4 by ANTLR 4.9.2
+// Generated from ../JQL.g4 by ANTLR 4.9.2
 // jshint ignore: start
 import antlr4 from 'antlr4';
 import JQLListener from './JQLListener.js';
+import JQLVisitor from './JQLVisitor.js';
+
 
 const serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786",
     "\u5964\u0003\u000f:\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004",
     "\t\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007\t\u0007",
-    "\u0003\u0002\u0003\u0002\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003",
-    "\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0003\u0007\u0003",
-    "\u001a\n\u0003\f\u0003\u000e\u0003\u001d\u000b\u0003\u0003\u0004\u0003",
+    "\u0003\u0002\u0003\u0002\u0003\u0003\u0003\u0003\u0003\u0004\u0003\u0004",
+    "\u0003\u0004\u0003\u0004\u0003\u0004\u0003\u0004\u0003\u0004\u0003\u0004",
+    "\u0003\u0004\u0007\u0004\u001c\n\u0004\f\u0004\u000e\u0004\u001f\u000b",
     "\u0004\u0003\u0005\u0003\u0005\u0003\u0005\u0003\u0005\u0003\u0006\u0003",
     "\u0006\u0003\u0007\u0003\u0007\u0005\u0007)\n\u0007\u0003\u0007\u0003",
     "\u0007\u0005\u0007-\n\u0007\u0003\u0007\u0003\u0007\u0005\u00071\n\u0007",
     "\u0003\u0007\u0003\u0007\u0005\u00075\n\u0007\u0003\u0007\u0005\u0007",
-    "8\n\u0007\u0003\u0007\u0002\u0003\u0004\b\u0002\u0004\u0006\b\n\f\u0002",
-    "\u0003\u0003\u0002\u0005\n\u0002=\u0002\u000e\u0003\u0002\u0002\u0002",
-    "\u0004\u0010\u0003\u0002\u0002\u0002\u0006\u001e\u0003\u0002\u0002\u0002",
-    "\b \u0003\u0002\u0002\u0002\n$\u0003\u0002\u0002\u0002\f7\u0003\u0002",
-    "\u0002\u0002\u000e\u000f\u0005\u0004\u0003\u0002\u000f\u0003\u0003\u0002",
-    "\u0002\u0002\u0010\u0011\b\u0003\u0001\u0002\u0011\u0012\u0005\b\u0005",
-    "\u0002\u0012\u001b\u0003\u0002\u0002\u0002\u0013\u0014\f\u0005\u0002",
-    "\u0002\u0014\u0015\u0007\u0003\u0002\u0002\u0015\u001a\u0005\u0004\u0003",
-    "\u0006\u0016\u0017\f\u0004\u0002\u0002\u0017\u0018\u0007\u0004\u0002",
-    "\u0002\u0018\u001a\u0005\u0004\u0003\u0005\u0019\u0013\u0003\u0002\u0002",
-    "\u0002\u0019\u0016\u0003\u0002\u0002\u0002\u001a\u001d\u0003\u0002\u0002",
-    "\u0002\u001b\u0019\u0003\u0002\u0002\u0002\u001b\u001c\u0003\u0002\u0002",
-    "\u0002\u001c\u0005\u0003\u0002\u0002\u0002\u001d\u001b\u0003\u0002\u0002",
-    "\u0002\u001e\u001f\u0007\u000f\u0002\u0002\u001f\u0007\u0003\u0002\u0002",
-    "\u0002 !\u0005\u0006\u0004\u0002!\"\u0005\n\u0006\u0002\"#\u0005\f\u0007",
-    "\u0002#\t\u0003\u0002\u0002\u0002$%\t\u0002\u0002\u0002%\u000b\u0003",
-    "\u0002\u0002\u0002&(\u0007\f\u0002\u0002\')\u0007\u000b\u0002\u0002",
+    "8\n\u0007\u0003\u0007\u0002\u0003\u0006\b\u0002\u0004\u0006\b\n\f\u0002",
+    "\u0003\u0003\u0002\u0006\u000b\u0002=\u0002\u000e\u0003\u0002\u0002",
+    "\u0002\u0004\u0010\u0003\u0002\u0002\u0002\u0006\u0012\u0003\u0002\u0002",
+    "\u0002\b \u0003\u0002\u0002\u0002\n$\u0003\u0002\u0002\u0002\f7\u0003",
+    "\u0002\u0002\u0002\u000e\u000f\u0007\u0003\u0002\u0002\u000f\u0003\u0003",
+    "\u0002\u0002\u0002\u0010\u0011\u0005\u0006\u0004\u0002\u0011\u0005\u0003",
+    "\u0002\u0002\u0002\u0012\u0013\b\u0004\u0001\u0002\u0013\u0014\u0005",
+    "\b\u0005\u0002\u0014\u001d\u0003\u0002\u0002\u0002\u0015\u0016\f\u0005",
+    "\u0002\u0002\u0016\u0017\u0007\u0004\u0002\u0002\u0017\u001c\u0005\u0006",
+    "\u0004\u0006\u0018\u0019\f\u0004\u0002\u0002\u0019\u001a\u0007\u0005",
+    "\u0002\u0002\u001a\u001c\u0005\u0006\u0004\u0005\u001b\u0015\u0003\u0002",
+    "\u0002\u0002\u001b\u0018\u0003\u0002\u0002\u0002\u001c\u001f\u0003\u0002",
+    "\u0002\u0002\u001d\u001b\u0003\u0002\u0002\u0002\u001d\u001e\u0003\u0002",
+    "\u0002\u0002\u001e\u0007\u0003\u0002\u0002\u0002\u001f\u001d\u0003\u0002",
+    "\u0002\u0002 !\u0005\u0002\u0002\u0002!\"\u0005\n\u0006\u0002\"#\u0005",
+    "\f\u0007\u0002#\t\u0003\u0002\u0002\u0002$%\t\u0002\u0002\u0002%\u000b",
+    "\u0003\u0002\u0002\u0002&(\u0007\r\u0002\u0002\')\u0007\f\u0002\u0002",
     "(\'\u0003\u0002\u0002\u0002()\u0003\u0002\u0002\u0002)8\u0003\u0002",
-    "\u0002\u0002*,\u0007\f\u0002\u0002+-\u0007\u000b\u0002\u0002,+\u0003",
-    "\u0002\u0002\u0002,-\u0003\u0002\u0002\u0002-8\u0003\u0002\u0002\u0002",
-    ".0\u0007\r\u0002\u0002/1\u0007\u000b\u0002\u00020/\u0003\u0002\u0002",
-    "\u000201\u0003\u0002\u0002\u000218\u0003\u0002\u0002\u000224\u0007\r",
-    "\u0002\u000235\u0007\u000b\u0002\u000243\u0003\u0002\u0002\u000245\u0003",
-    "\u0002\u0002\u000258\u0003\u0002\u0002\u000268\u0007\u000e\u0002\u0002",
-    "7&\u0003\u0002\u0002\u00027*\u0003\u0002\u0002\u00027.\u0003\u0002\u0002",
-    "\u000272\u0003\u0002\u0002\u000276\u0003\u0002\u0002\u00028\r\u0003",
-    "\u0002\u0002\u0002\t\u0019\u001b(,047"].join("");
+    "\u0002\u0002*,\u0007\r\u0002\u0002+-\u0007\f\u0002\u0002,+\u0003\u0002",
+    "\u0002\u0002,-\u0003\u0002\u0002\u0002-8\u0003\u0002\u0002\u0002.0\u0007",
+    "\u000e\u0002\u0002/1\u0007\f\u0002\u00020/\u0003\u0002\u0002\u00020",
+    "1\u0003\u0002\u0002\u000218\u0003\u0002\u0002\u000224\u0007\u000e\u0002",
+    "\u000235\u0007\f\u0002\u000243\u0003\u0002\u0002\u000245\u0003\u0002",
+    "\u0002\u000258\u0003\u0002\u0002\u000268\u0007\u000f\u0002\u00027&\u0003",
+    "\u0002\u0002\u00027*\u0003\u0002\u0002\u00027.\u0003\u0002\u0002\u0002",
+    "72\u0003\u0002\u0002\u000276\u0003\u0002\u0002\u00028\r\u0003\u0002",
+    "\u0002\u0002\t\u001b\u001d(,047"].join("");
 
 
 const atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
@@ -51,13 +53,13 @@ const sharedContextCache = new antlr4.PredictionContextCache();
 export default class JQLParser extends antlr4.Parser {
 
     static grammarFileName = "JQL.g4";
-    static literalNames = [ null, null, null, null, null, "'>'", "'>='", 
-                            "'<'", "'<='" ];
-    static symbolicNames = [ null, "AND", "OR", "EQ", "CONTAINS", "GT", 
-                             "GTE", "LT", "LTE", "WS", "INT", "FLOAT", "STRING", 
-                             "ID" ];
-    static ruleNames = [ "filter", "expression", "reference", "predicate", 
-                         "oper", "value" ];
+    static literalNames = [ null, null, null, null, null, null, "'<'", "'>'", 
+                            "'<='", "'>='" ];
+    static symbolicNames = [ null, "KEY", "AND", "OR", "EQ", "CONTAINS", 
+                             "LT", "GT", "LTE", "GTE", "WS", "INT", "FLOAT", 
+                             "STRING" ];
+    static ruleNames = [ "reference", "query", "expression", "predicate", 
+                         "operator", "value" ];
 
     constructor(input) {
         super(input);
@@ -73,7 +75,7 @@ export default class JQLParser extends antlr4.Parser {
 
     sempred(localctx, ruleIndex, predIndex) {
     	switch(ruleIndex) {
-    	case 1:
+    	case 2:
     	    		return this.expression_sempred(localctx, predIndex);
         default:
             throw "No predicate with index:" + ruleIndex;
@@ -94,12 +96,35 @@ export default class JQLParser extends antlr4.Parser {
 
 
 
-	filter() {
-	    let localctx = new FilterContext(this, this._ctx, this.state);
-	    this.enterRule(localctx, 0, JQLParser.RULE_filter);
+	reference() {
+	    let localctx = new ReferenceContext(this, this._ctx, this.state);
+	    this.enterRule(localctx, 0, JQLParser.RULE_reference);
 	    try {
 	        this.enterOuterAlt(localctx, 1);
 	        this.state = 12;
+	        this.match(JQLParser.KEY);
+	    } catch (re) {
+	    	if(re instanceof antlr4.error.RecognitionException) {
+		        localctx.exception = re;
+		        this._errHandler.reportError(this, re);
+		        this._errHandler.recover(this, re);
+		    } else {
+		    	throw re;
+		    }
+	    } finally {
+	        this.exitRule();
+	    }
+	    return localctx;
+	}
+
+
+
+	query() {
+	    let localctx = new QueryContext(this, this._ctx, this.state);
+	    this.enterRule(localctx, 2, JQLParser.RULE_query);
+	    try {
+	        this.enterOuterAlt(localctx, 1);
+	        this.state = 14;
 	        this.expression(0);
 	    } catch (re) {
 	    	if(re instanceof antlr4.error.RecognitionException) {
@@ -124,18 +149,18 @@ export default class JQLParser extends antlr4.Parser {
 	    const _parentState = this.state;
 	    let localctx = new ExpressionContext(this, this._ctx, _parentState);
 	    let _prevctx = localctx;
-	    const _startState = 2;
-	    this.enterRecursionRule(localctx, 2, JQLParser.RULE_expression, _p);
+	    const _startState = 4;
+	    this.enterRecursionRule(localctx, 4, JQLParser.RULE_expression, _p);
 	    try {
 	        this.enterOuterAlt(localctx, 1);
 	        localctx = new PredicateExpressionContext(this, localctx);
 	        this._ctx = localctx;
 	        _prevctx = localctx;
 
-	        this.state = 15;
+	        this.state = 17;
 	        this.predicate();
 	        this._ctx.stop = this._input.LT(-1);
-	        this.state = 25;
+	        this.state = 27;
 	        this._errHandler.sync(this);
 	        var _alt = this._interp.adaptivePredict(this._input,1,this._ctx)
 	        while(_alt!=2 && _alt!=antlr4.atn.ATN.INVALID_ALT_NUMBER) {
@@ -144,39 +169,39 @@ export default class JQLParser extends antlr4.Parser {
 	                    this.triggerExitRuleEvent();
 	                }
 	                _prevctx = localctx;
-	                this.state = 23;
+	                this.state = 25;
 	                this._errHandler.sync(this);
 	                var la_ = this._interp.adaptivePredict(this._input,0,this._ctx);
 	                switch(la_) {
 	                case 1:
 	                    localctx = new AndExpressionContext(this, new ExpressionContext(this, _parentctx, _parentState));
 	                    this.pushNewRecursionContext(localctx, _startState, JQLParser.RULE_expression);
-	                    this.state = 17;
+	                    this.state = 19;
 	                    if (!( this.precpred(this._ctx, 3))) {
 	                        throw new antlr4.error.FailedPredicateException(this, "this.precpred(this._ctx, 3)");
 	                    }
-	                    this.state = 18;
+	                    this.state = 20;
 	                    this.match(JQLParser.AND);
-	                    this.state = 19;
+	                    this.state = 21;
 	                    this.expression(4);
 	                    break;
 
 	                case 2:
 	                    localctx = new OrExpressionContext(this, new ExpressionContext(this, _parentctx, _parentState));
 	                    this.pushNewRecursionContext(localctx, _startState, JQLParser.RULE_expression);
-	                    this.state = 20;
+	                    this.state = 22;
 	                    if (!( this.precpred(this._ctx, 2))) {
 	                        throw new antlr4.error.FailedPredicateException(this, "this.precpred(this._ctx, 2)");
 	                    }
-	                    this.state = 21;
+	                    this.state = 23;
 	                    this.match(JQLParser.OR);
-	                    this.state = 22;
+	                    this.state = 24;
 	                    this.expression(3);
 	                    break;
 
 	                } 
 	            }
-	            this.state = 27;
+	            this.state = 29;
 	            this._errHandler.sync(this);
 	            _alt = this._interp.adaptivePredict(this._input,1,this._ctx);
 	        }
@@ -197,29 +222,6 @@ export default class JQLParser extends antlr4.Parser {
 
 
 
-	reference() {
-	    let localctx = new ReferenceContext(this, this._ctx, this.state);
-	    this.enterRule(localctx, 4, JQLParser.RULE_reference);
-	    try {
-	        this.enterOuterAlt(localctx, 1);
-	        this.state = 28;
-	        this.match(JQLParser.ID);
-	    } catch (re) {
-	    	if(re instanceof antlr4.error.RecognitionException) {
-		        localctx.exception = re;
-		        this._errHandler.reportError(this, re);
-		        this._errHandler.recover(this, re);
-		    } else {
-		    	throw re;
-		    }
-	    } finally {
-	        this.exitRule();
-	    }
-	    return localctx;
-	}
-
-
-
 	predicate() {
 	    let localctx = new PredicateContext(this, this._ctx, this.state);
 	    this.enterRule(localctx, 6, JQLParser.RULE_predicate);
@@ -229,7 +231,7 @@ export default class JQLParser extends antlr4.Parser {
 	        this.state = 30;
 	        this.reference();
 	        this.state = 31;
-	        this.oper();
+	        this.operator();
 	        this.state = 32;
 	        this.value();
 	    } catch (re) {
@@ -248,15 +250,15 @@ export default class JQLParser extends antlr4.Parser {
 
 
 
-	oper() {
-	    let localctx = new OperContext(this, this._ctx, this.state);
-	    this.enterRule(localctx, 8, JQLParser.RULE_oper);
+	operator() {
+	    let localctx = new OperatorContext(this, this._ctx, this.state);
+	    this.enterRule(localctx, 8, JQLParser.RULE_operator);
 	    var _la = 0; // Token type
 	    try {
 	        this.enterOuterAlt(localctx, 1);
 	        this.state = 34;
 	        _la = this._input.LA(1);
-	        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << JQLParser.EQ) | (1 << JQLParser.CONTAINS) | (1 << JQLParser.GT) | (1 << JQLParser.GTE) | (1 << JQLParser.LT) | (1 << JQLParser.LTE))) !== 0))) {
+	        if(!((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << JQLParser.EQ) | (1 << JQLParser.CONTAINS) | (1 << JQLParser.LT) | (1 << JQLParser.GT) | (1 << JQLParser.LTE) | (1 << JQLParser.GTE))) !== 0))) {
 	        this._errHandler.recoverInline(this);
 	        }
 	        else {
@@ -368,28 +370,28 @@ export default class JQLParser extends antlr4.Parser {
 }
 
 JQLParser.EOF = antlr4.Token.EOF;
-JQLParser.AND = 1;
-JQLParser.OR = 2;
-JQLParser.EQ = 3;
-JQLParser.CONTAINS = 4;
-JQLParser.GT = 5;
-JQLParser.GTE = 6;
-JQLParser.LT = 7;
+JQLParser.KEY = 1;
+JQLParser.AND = 2;
+JQLParser.OR = 3;
+JQLParser.EQ = 4;
+JQLParser.CONTAINS = 5;
+JQLParser.LT = 6;
+JQLParser.GT = 7;
 JQLParser.LTE = 8;
-JQLParser.WS = 9;
-JQLParser.INT = 10;
-JQLParser.FLOAT = 11;
-JQLParser.STRING = 12;
-JQLParser.ID = 13;
+JQLParser.GTE = 9;
+JQLParser.WS = 10;
+JQLParser.INT = 11;
+JQLParser.FLOAT = 12;
+JQLParser.STRING = 13;
 
-JQLParser.RULE_filter = 0;
-JQLParser.RULE_expression = 1;
-JQLParser.RULE_reference = 2;
+JQLParser.RULE_reference = 0;
+JQLParser.RULE_query = 1;
+JQLParser.RULE_expression = 2;
 JQLParser.RULE_predicate = 3;
-JQLParser.RULE_oper = 4;
+JQLParser.RULE_operator = 4;
 JQLParser.RULE_value = 5;
 
-class FilterContext extends antlr4.ParserRuleContext {
+class ReferenceContext extends antlr4.ParserRuleContext {
 
     constructor(parser, parent, invokingState) {
         if(parent===undefined) {
@@ -400,7 +402,50 @@ class FilterContext extends antlr4.ParserRuleContext {
         }
         super(parent, invokingState);
         this.parser = parser;
-        this.ruleIndex = JQLParser.RULE_filter;
+        this.ruleIndex = JQLParser.RULE_reference;
+    }
+
+	KEY() {
+	    return this.getToken(JQLParser.KEY, 0);
+	};
+
+	enterRule(listener) {
+	    if(listener instanceof JQLListener ) {
+	        listener.enterReference(this);
+		}
+	}
+
+	exitRule(listener) {
+	    if(listener instanceof JQLListener ) {
+	        listener.exitReference(this);
+		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof JQLVisitor ) {
+	        return visitor.visitReference(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
+
+}
+
+
+
+class QueryContext extends antlr4.ParserRuleContext {
+
+    constructor(parser, parent, invokingState) {
+        if(parent===undefined) {
+            parent = null;
+        }
+        if(invokingState===undefined || invokingState===null) {
+            invokingState = -1;
+        }
+        super(parent, invokingState);
+        this.parser = parser;
+        this.ruleIndex = JQLParser.RULE_query;
     }
 
 	expression() {
@@ -409,14 +454,22 @@ class FilterContext extends antlr4.ParserRuleContext {
 
 	enterRule(listener) {
 	    if(listener instanceof JQLListener ) {
-	        listener.enterFilter(this);
+	        listener.enterQuery(this);
 		}
 	}
 
 	exitRule(listener) {
 	    if(listener instanceof JQLListener ) {
-	        listener.exitFilter(this);
+	        listener.exitQuery(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof JQLVisitor ) {
+	        return visitor.visitQuery(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -481,6 +534,14 @@ class AndExpressionContext extends ExpressionContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof JQLVisitor ) {
+	        return visitor.visitAndExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
@@ -507,6 +568,14 @@ class PredicateExpressionContext extends ExpressionContext {
 	    if(listener instanceof JQLListener ) {
 	        listener.exitPredicateExpression(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof JQLVisitor ) {
+	        return visitor.visitPredicateExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -548,45 +617,18 @@ class OrExpressionContext extends ExpressionContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof JQLVisitor ) {
+	        return visitor.visitOrExpression(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
 JQLParser.OrExpressionContext = OrExpressionContext;
-
-class ReferenceContext extends antlr4.ParserRuleContext {
-
-    constructor(parser, parent, invokingState) {
-        if(parent===undefined) {
-            parent = null;
-        }
-        if(invokingState===undefined || invokingState===null) {
-            invokingState = -1;
-        }
-        super(parent, invokingState);
-        this.parser = parser;
-        this.ruleIndex = JQLParser.RULE_reference;
-    }
-
-	ID() {
-	    return this.getToken(JQLParser.ID, 0);
-	};
-
-	enterRule(listener) {
-	    if(listener instanceof JQLListener ) {
-	        listener.enterReference(this);
-		}
-	}
-
-	exitRule(listener) {
-	    if(listener instanceof JQLListener ) {
-	        listener.exitReference(this);
-		}
-	}
-
-
-}
-
-
 
 class PredicateContext extends antlr4.ParserRuleContext {
 
@@ -622,8 +664,8 @@ class OperatorPredicateContext extends PredicateContext {
 	    return this.getTypedRuleContext(ReferenceContext,0);
 	};
 
-	oper() {
-	    return this.getTypedRuleContext(OperContext,0);
+	operator() {
+	    return this.getTypedRuleContext(OperatorContext,0);
 	};
 
 	value() {
@@ -642,12 +684,20 @@ class OperatorPredicateContext extends PredicateContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof JQLVisitor ) {
+	        return visitor.visitOperatorPredicate(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
 JQLParser.OperatorPredicateContext = OperatorPredicateContext;
 
-class OperContext extends antlr4.ParserRuleContext {
+class OperatorContext extends antlr4.ParserRuleContext {
 
     constructor(parser, parent, invokingState) {
         if(parent===undefined) {
@@ -658,7 +708,7 @@ class OperContext extends antlr4.ParserRuleContext {
         }
         super(parent, invokingState);
         this.parser = parser;
-        this.ruleIndex = JQLParser.RULE_oper;
+        this.ruleIndex = JQLParser.RULE_operator;
     }
 
 	EQ() {
@@ -687,14 +737,22 @@ class OperContext extends antlr4.ParserRuleContext {
 
 	enterRule(listener) {
 	    if(listener instanceof JQLListener ) {
-	        listener.enterOper(this);
+	        listener.enterOperator(this);
 		}
 	}
 
 	exitRule(listener) {
 	    if(listener instanceof JQLListener ) {
-	        listener.exitOper(this);
+	        listener.exitOperator(this);
 		}
+	}
+
+	accept(visitor) {
+	    if ( visitor instanceof JQLVisitor ) {
+	        return visitor.visitOperator(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
 	}
 
 
@@ -744,15 +802,23 @@ class ValueContext extends antlr4.ParserRuleContext {
 		}
 	}
 
+	accept(visitor) {
+	    if ( visitor instanceof JQLVisitor ) {
+	        return visitor.visitValue(this);
+	    } else {
+	        return visitor.visitChildren(this);
+	    }
+	}
+
 
 }
 
 
 
 
-JQLParser.FilterContext = FilterContext; 
-JQLParser.ExpressionContext = ExpressionContext; 
 JQLParser.ReferenceContext = ReferenceContext; 
+JQLParser.QueryContext = QueryContext; 
+JQLParser.ExpressionContext = ExpressionContext; 
 JQLParser.PredicateContext = PredicateContext; 
-JQLParser.OperContext = OperContext; 
+JQLParser.OperatorContext = OperatorContext; 
 JQLParser.ValueContext = ValueContext; 

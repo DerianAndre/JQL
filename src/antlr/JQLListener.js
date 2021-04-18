@@ -1,16 +1,25 @@
-// Generated from JQL.g4 by ANTLR 4.9.2
+// Generated from ../JQL.g4 by ANTLR 4.9.2
 // jshint ignore: start
 import antlr4 from 'antlr4';
 
 // This class defines a complete listener for a parse tree produced by JQLParser.
 export default class JQLListener extends antlr4.tree.ParseTreeListener {
 
-	// Enter a parse tree produced by JQLParser#filter.
-	enterFilter(ctx) {
+	// Enter a parse tree produced by JQLParser#reference.
+	enterReference(ctx) {
 	}
 
-	// Exit a parse tree produced by JQLParser#filter.
-	exitFilter(ctx) {
+	// Exit a parse tree produced by JQLParser#reference.
+	exitReference(ctx) {
+	}
+
+
+	// Enter a parse tree produced by JQLParser#query.
+	enterQuery(ctx) {
+	}
+
+	// Exit a parse tree produced by JQLParser#query.
+	exitQuery(ctx) {
 	}
 
 
@@ -41,15 +50,6 @@ export default class JQLListener extends antlr4.tree.ParseTreeListener {
 	}
 
 
-	// Enter a parse tree produced by JQLParser#reference.
-	enterReference(ctx) {
-	}
-
-	// Exit a parse tree produced by JQLParser#reference.
-	exitReference(ctx) {
-	}
-
-
 	// Enter a parse tree produced by JQLParser#OperatorPredicate.
 	enterOperatorPredicate(ctx) {
 	}
@@ -59,12 +59,12 @@ export default class JQLListener extends antlr4.tree.ParseTreeListener {
 	}
 
 
-	// Enter a parse tree produced by JQLParser#oper.
-	enterOper(ctx) {
+	// Enter a parse tree produced by JQLParser#operator.
+	enterOperator(ctx) {
 	}
 
-	// Exit a parse tree produced by JQLParser#oper.
-	exitOper(ctx) {
+	// Exit a parse tree produced by JQLParser#operator.
+	exitOperator(ctx) {
 	}
 
 

@@ -1,24 +1,29 @@
 grammar JQL;
+// Key
+KEY         : [a-zA-Z]+;
 
+// Operators:
 AND         : '&' | '&&';
 OR          : '|' | '||';
 
-// comparison operators
+// Operators: Conditional & Order
 EQ          : '=' | '==';
 CONTAINS    : '~' | '~~';
-GT          : '>';
-GTE         : '>=';
 LT          : '<';
+GT          : '>';
 LTE         : '<=';
+GTE         : '>=';
 
+// Values
 WS          : [ \t\r\n]+ -> skip;
 INT         : '-'? [0-9]+ ;
 FLOAT       : '-'? [0-9]+'.'[0-9]+;
 STRING      : '"' .*? '"';
 
-ID          : [a-zA-Z]+;
 
-filter
+reference: KEY;
+
+query
 		: expression
 		;
 
@@ -28,13 +33,11 @@ expression
 		| predicate 									#PredicateExpression
 		;
 
-reference: ID;
-
 predicate
-		: reference oper value				#OperatorPredicate
+		: reference operator value		#OperatorPredicate
 		;
 
-oper
+operator
 		: EQ
 		| CONTAINS
 		| GT

@@ -1,16 +1,26 @@
-# JQL (JSON Query Language)
+# JQL <small style="opacity:0.45">JSON Query Language</small>
 A simple intuitive JSON Query Language inspired by [MySQL](https://www.mysql.com/) and [jslinq](https://github.com/maurobussini/jslinq) made in javascript.
 
-**This is a work in progress**
+**This is a work in progress and not ready for production use just experimental porpouses**
 
+# ANTLR (*)
+Using ANTLR version 4
+Add the binary `antlr-<version>-complete.jar` file into `/src/antlr/bin` folder and modify `package.json` if needed.
+
+Use the following command to build JQL ANTLR files
+```
+	npm run antlr
+```
+**(*)ANTLR COULD BE DROPPED BECAUSE OF SIZE ~500kb**
 
 # Operators
 Supported operators for exprresions are very basic and currently does not support logical operators (for now)
 Use a function for a more complex expression.
-| Operator type   |  Symbols                 |
-| --------------- | ------------------------ |
-| **Condtional**  | `~  =  ==  ===  !=  !==` |
-| **Order**       | `<  >  <=  >=`           |
+| Operator type     |  Symbols                 |
+| ----------------- | ------------------------ |
+| **`Comparation`** | `~  =  ==  !=  ===  !==` |
+|                   | `<  >  <=  >=`           |
+| **`Logical`**     | `&& \|\|`                |
 
 
 # Functions
@@ -30,6 +40,9 @@ Get data (items)
 
 	console.log(result);
 	► (n) [{…}, {…}, {…}, …]
+
+	result.count(); // console.log(result.lenth);
+	► Length (n)
 ```
 
 ## Logging
@@ -56,8 +69,8 @@ Debug like a pro!
 **Will log this table:**
 | id  | email                        |
 | --- | ---------------------------- |
-| 0   | "anelsen0@printfriendly.com" |
-| 1   | "dmadgett1@youtu.be"         |
+| `0`   | `anelsen0@printfriendly.com` |
+| `1`   | `dmadgett1@youtu.be`         |
 
 
 # Why tho?

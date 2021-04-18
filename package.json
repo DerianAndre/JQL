@@ -17,9 +17,16 @@
   ],
   "scripts": {
     "build": "gulp",
-    "pack": "webpack --config=webpack.config.js"
+    "pack": "webpack --config=webpack.config.js",
+    "build-antlr": "cd src/antlr/bin/ && antlr-4.9.2-complete.jar -Dlanguage=JavaScript -visitor -o ../ ../JQL.g4"
   },
   "devDependencies": {
+    "@babel/core": "^7.13.15",
+    "@babel/plugin-proposal-class-properties": "^7.13.0",
+    "@babel/plugin-syntax-class-properties": "^7.12.13",
+    "@babel/preset-env": "^7.13.15",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babelify": "^10.0.0",
     "gulp": "^4.0.2",
     "gulp-config-sync": "^1.0.2",
     "gulp-header": "^2.0.9",
@@ -29,6 +36,7 @@
     "webpack-cli": "^4.6.0"
   },
   "dependencies": {
+    "@tarp/require": "^1.4.3",
     "antlr4": "^4.9.2"
   }
 }
