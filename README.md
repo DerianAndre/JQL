@@ -1,17 +1,14 @@
-# JQL <small style="opacity:0.45">JSON Query Language</small>
+<div align="center">
+![alt text](JQL.svg "JQL Logo")
+
+
+# JQL
+## JSON Query Language
+
 A simple intuitive JSON Query Language inspired by [MySQL](https://www.mysql.com/) and [jslinq](https://github.com/maurobussini/jslinq) made in javascript.
 
-**This is a work in progress and not ready for production use just experimental porpouses**
-
-# ANTLR (*)
-Using ANTLR version 4
-Add the binary `antlr-<version>-complete.jar` file into `/src/antlr/bin` folder and modify `package.json` if needed.
-
-Use the following command to build JQL ANTLR files
-```
-	npm run antlr
-```
-**(*) ANTLR COULD BE DROPPED DUE TO SIZE ~ +400kb**
+**This is a work in progress and not ready for production use.**
+</div>
 
 # Operators
 Supported operators for expressions are very basic. Use a function for a more complex predicate.
@@ -108,11 +105,11 @@ result.count(); // console.log(result.lenth);
 ## 💻 Logging
 Debug like a pro!
 
-| **Function** | **Description**                                        | **Variable** | **Type**      | **Description (Var)**             |
-|--------------|--------------------------------------------------------|--------------|---------------|-----------------------------------|
-| `.dir()`     | Do a `console.dir()`                                   | `object`   | `object`        | Options                           |
-| `.log()`     | Do a `console.log()` for items or constructor function | `items`    | `boolean`       | Show constrcutor function (false) |
-| `.table()`   | Do a `console.table()`                                 | `columns`  | `array, string` | Columns to show                   |
+| **Function** | **Description**                                        | **Variable** | **Type** | **Description (Var)**                   |
+|--------------|--------------------------------------------------------|--------------|----------|-----------------------------------------|
+| `.dir()`     | Do a `console.dir()`                                   | `args`       | `object` | { items: true, limit: 10, options: {} } |
+| `.log()`     | Do a `console.log()` for items or constructor function | `args`       | `object` | { items: true, limit: 10 }    					|
+| `.table()`   | Do a `console.table()`                                 | `args`       | `object` | { columns: false, limit: 10 } 					|
 
 ### `.log()`
 ```javascript
@@ -143,6 +140,6 @@ so I figuered out that I can export my DB with a Node command and save it inside
 
 Then I got into JSLINQ and it's pretty much what I needed. But I just like to have somethings my way and that's it haha.
 
-**TL;DR:** I just wanted to make things in my on way and to learn about how to do it.
+**TL;DR:** I just wanted to make things in my on way and to learn about how to do it in the process.
 
 **Big thanks to JSLINQ for their awesome work and being open-source.**

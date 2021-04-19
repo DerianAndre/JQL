@@ -1,48 +1,48 @@
 /*!
- * JQL
+ * JQL (JSON Query Language)
  * A simple intuitive JSON Query Language inspired by MySQL and jslinq made in javascript.
  * @version    : 0.1.0
  * @author     : DerianAndre
  * @repository : https://github.com/DerianAndre/JQL.git
- * @built      : 18/4/2021
+ * @built      : 19/4/2021
  * @license    : MIT
  */
+// Contants
+const JQL_LOGGING_STYLE = 'margin: -4px 0 -3px; padding: 6px 15px; background: rgb(15,70,150); color: white; border: 1px solid #555;';
+const JQL_LOGGING_LIMIT = 10;
+// Contants: Operators
+const JQL_OPERATORS_ARRAY = [
+	'~', '~~',
+	'=', '==', '===',
+	'!=', '!==',
+	'<', '>', 
+	'<=', '>=',
+];
+// Contants: Conditions
+const JQL_CONDITIONS_ARRAY = [
+	'&&', '||'
+];
+// Contants Make them regex ready
+const JQL_OPERATORS  = JQL_OPERATORS_ARRAY.map(function(op) { return '\\' + op; }).join('|');
+const JQL_CONDITIONS = JQL_CONDITIONS_ARRAY.map(function(op) { return '\\' + op; }).join('|');
+const JQL_OPERATORS_REGEX = `(\\w+) (${JQL_OPERATORS}) (\\w+)`;
+const JQL_CONDITIONS_REGEX = `(?:${JQL_OPERATORS_REGEX})*(${JQL_CONDITIONS})*`;
+
 (function (root, factory) {
 	//UMD - Universal Module Definition
 	if (typeof define === 'function' && define.amd) {
-		//AMD: register as an anonymous module without dependencies
 		define([], factory);
 	} else if (typeof exports === 'object') {
-		//Node: does not work with strict CommonJS, but only CommonJS-like 
-		//environments that support module.exports, like Node.
 		module.exports = factory();
 	} else {
-		//Browser: globals (root is window)
 		root.JQL = factory();
 	}
 } (this, function () {
-	// Valid Operators
-	const OPERATORS = [
-		'~', '~~',
-		'=', '==', '===',
-		'!=', '!==',
-		'<', '>', 
-		'<=', '>=',
-	];
-	// Valid Conditions
-	const CONDITIONS = [
-		'&&', '||'
-	];
-	// Make them regex ready
-	const OPS = OPERATORS.map(function(op) { return '\\' + op; }).join('|');
-	const CDS = CONDITIONS.map(function(op) { return '\\' + op; }).join('|');
-	const regexOPS = `(\\w+) (${OPS}) (\\w+)`;
-
 	// Constructor
 	function JQL(array) {
 		//Check arguments
 		if (!array || !(array instanceof Array))
-			throw new Error("JQL: Data is invalid or is not a valid array");
+			throw new Error("JQL: Invalid array");
 
 		// 📄 Data
 		// 🙄 Very straight forward, duh
@@ -51,9 +51,9 @@
 
 		// 🔍 Functions: Query
 		// ✨ The magic it's here! 
-		this.select=  select;
-		this.where=   where;
-
+		this.select= select;
+		this.where=  where;
+		this.limit=  limit;
 		// 📉 Functions: Data
 		// 😪 Yes I know. I like it this way because if forget things...
 		this.data=   data;
@@ -63,9 +63,9 @@
 
 		// 💻 Functions: Logging
 		// 😉 Debug like a pro!
-		this.log=   log;
-		this.table= table;
-		this.dir=   dir;
+		this.log=    log;
+		this.table=  table;
+		this.dir=    dir;
 		
 		// ✅ Return for chaining
 		return this;
@@ -76,103 +76,76 @@
 	// Return true or false depeding on the expression and operator
 	function condition(expression, element) {
 		let m, matches = [];
-		const	regex = new RegExp(regexOPS, 'gm');
+		const	regex = new RegExp(JQL_OPERATORS_REGEX, 'gm');
 		while ((m = regex.exec(expression)) !== null) {
 			// This is necessary to avoid infinite loops with zero-width matches
 			if (m.index === regex.lastIndex) {
 				regex.lastIndex++;
-			}
-			
+			}			
 			// The result can be accessed through the matches
 			m.forEach((match, groupIndex) => {
 				matches[groupIndex] = match;
 			});
 		}
-
 		// Set key, value and operator
 		let 
 			key 	= matches[1],
 			op  	= matches[2],
 			value = matches[3];
-
+		// Return false if we don't have a match
 		if(!key || !op || !value) return false;
-		if(value == 'true')  value = true;
-		if(value == 'false') value = false;
-		if(/^\d+$/.test(value)) value = parseInt(value);
-
+		// Check the value to convert it to the right type
+		if(value == 'null')					value = null;
+		if(value == 'true')					value = true;
+		if(value == 'false')				value = false;
+		if(/^\d+$/.test(value)) 		value = parseInt(value);
+		if(/^\d.\d+$/.test(value)) 	value = parseFloat(value);
+		// Check for operators
 		switch (op) {
-			//
-			case '~':
-				return (element[key].includes(value));
-			break;
-			//
-			case '=': case '==':
-				return (element[key] == value);
-			break;
-			//
-			case '===':
-				return (element[key] === value);
-			break;
-			//
-			case '!=':
-				return (element[key] != value);
-			break;
-			//
-			case '!==':
-				return (element[key] !== value);
-			break;
-			//
-			case '<':
-				return (element[key] < value);
-			break;
-			//
-			case '<=':
-				return (element[key] <= value);
-			break;
-			//
-			case '>':
-				return (element[key] > value);
-			break;
-			//
-			case '>=':
-				return (element[key] >= value);
-			break;
-			//
-			default: return false;
+			case '~':		return (element[key].includes(value));
+			case '=':
+			case '==':	return (element[key] ==  value);
+			case '===':	return (element[key] === value);
+			case '!=':	return (element[key] !=  value);
+			case '!==':	return (element[key] !== value);
+			case '<':		return (element[key] <  value);
+			case '<=':	return (element[key] <= value);
+			case '>':		return (element[key] >  value);
+			case '>=':	return (element[key] >= value);
+			default:		return false;
 		}
 	}
 
 	// Compare
-	// Compare an expression by a query string
+	// Compare an expression by a query string (&& ||)
 	function compare(expression, element) {
-		if( (!expression && typeof expression !== 'string') || !element ) return false;
-
-		let m, matches = [];
-		
-		const	regex = new RegExp(`(?:${regexOPS})*(${CDS})*`, 'gm');
+		if( (!expression && typeof expression !== 'string') || !element )
+			return false;
 
 		// Get matches
-		while (m = regex.exec(expression)) {
+		let regexMatch, matches = [];
+		const	regex = new RegExp(JQL_CONDITIONS_REGEX, 'gm');
+		while (regexMatch = regex.exec(expression)) {
 			// This is necessary to avoid infinite loops with zero-width matches
-			if (m.index === regex.lastIndex) {
+			if (regexMatch.index === regex.lastIndex) {
 				regex.lastIndex++;
 			}
-			
 			// The result can be accessed through the matches
-			if(m[0]) {
-				matches.push(m[0]);
+			if(regexMatch[0]) {
+				matches.push(regexMatch[0]);
 			}
 		}
 
+		// Push to booleans array
 		let booleans = [];
 		for (let i = 0; i < matches.length; i++) {
 			const item = matches[i];
-			if(item.length > 2) {				
-				let result = condition(item, element);
-				booleans.push(result);
+			if(item.length > 2) {
+				booleans.push(condition(item, element));
 			}
 		}
-		
+
+		// Check conditional operators
 		if(matches.includes('&&')) {
 			if(booleans.includes(false)) {
 				return false;
@@ -203,7 +176,7 @@
 		var result = [],
 				item = {},
 				itemData = {};
-		
+
 		// Make array if
 		if(typeof expression === 'string') {
 			if(expression.split(/[\s,]+/)) {
@@ -219,28 +192,18 @@
 			let keys = this.items[i];
 			for (let e = 0; e < expression.length; e++) {
 				//Use function to obtain match
-
-
-
 				for(let key in keys) {
+					// Key is the same as the expression element
 					if(key == expression[e]) {
-						//console.log(this.items[i][key]);
 						itemData[key] = this.items[i][key];
 						item[j] = {...itemData};
 					}
 				}
-
+				// If expression match add it to the result
 				if(e == expression.length-1) {
 					result[j] = item[j];
 					j++;
 				}
-				
-				//if(typeof expression === 'string') {
-				//	var match = compare(expression, this.items[i]);
-				//} else {
-				//	var match = expression(this.items[i]);
-				//}
-				//If element match, append
 			}
 		}
 
@@ -248,14 +211,14 @@
 		return new JQL(result);
 	}
 
-	// Where: Select elements that match expression by a qery string or a function
+	// Where
+	// Select elements that match expression by a qery string or a function
 	function where(expression) {
 		// Check arguments
-		if (!expression) throw new Error("WHERE: Is invalid");
-		//Define output array
-		var result = [];
+		if (!expression) throw new Error("JQL: .where() Is invalid");
 
 		//For each element on data
+		var result = [];
 		for (var i = 0; i < this.items.length; i++) {
 			//Use function to obtain match
 			if(typeof expression === 'string') {
@@ -270,6 +233,28 @@
 
 		//Return for chaining
 		return new JQL(result);
+	}
+
+	// Limit
+	// Get a certain number of items
+	function limit(value = false) {
+		//Check arguments
+		if ( value == false || value == null )
+			return new JQL(this.items);
+		if ( value && value < 0 )
+			throw new Error("Value must be greater or equals zero");
+			
+		//Copy array in order to avoid modifications on original
+		var result = [];
+		for( var i = 0; i < this.items.length; i++ ){
+			result.push(this.items[i]);
+		}
+
+		//Slice source array
+		var limit = result.slice(0, value);
+			
+		//Return for chaining
+		return new JQL(limit);
 	}
 	//#endregion
 
@@ -290,23 +275,59 @@
 	//#region 📖 Functions: Logging
 	// Dir
 	// console.dir() for items
-	function dir(object = false) {
-		console.dir(this.items, object);
+	function dir(args = {}) {
+		// Arguments
+		args.items=   ( typeof args.items !== 'undefined')   ? args.items   : true;
+		args.limit=   ( typeof args.limit !== 'undefined')   ? args.limit   : JQL_LOGGING_LIMIT;
+		args.options= ( typeof args.options !== 'undefined') ? args.options : false;
+		// Console
+		if(typeof args.items === 'boolean' && args.items) {
+			let limit = (args.limit < this.length) ? args.limit : this.length;
+			console.group(`%c[JQL] Dir – Showing: ${limit} of ${this.length} elements`, JQL_LOGGING_STYLE);
+				console.dir(this.limit(args.limit).items, args.options);
+			console.groupEnd();
+		} else {
+			console.group(`%c[JQL] Dir – Constructor`, JQL_LOGGING_STYLE);
+				console.log(this);
+			console.groupEnd();
+		}
+		// Return
 		return;
 	}
 
 	// Log
 	// console.log() for constructor
-	function log(items = true) {
-		if(typeof items === 'boolean' && items) console.log(this.items);
-		else console.log(this);
+	function log(args = {}) {
+		// Arguments
+		args.items= ( typeof args.items !== 'undefined') ? args.items : true;
+		args.limit= ( typeof args.limit !== 'undefined') ? args.limit : JQL_LOGGING_LIMIT;
+		// Console
+		if(typeof args.items === 'boolean' && args.items) {
+			let limit = (args.limit < this.length) ? args.limit : this.length;
+			console.group(`%c[JQL] Log – Showing: ${limit} of ${this.length} elements`, JQL_LOGGING_STYLE);
+				console.log(this.limit(args.limit).items);
+			console.groupEnd();
+		} else {
+			console.group(`%c[JQL] Log – Constructor`, JQL_LOGGING_STYLE);
+				console.log(this);
+			console.groupEnd();
+		}
+		// Return
 		return;
 	}
 
 	// Table
 	// console.table() for items
-	function table(columns = false) {
-		console.table(this.items, columns);
+	function table(args = {}) {
+		// Arguments
+		args.columns= ( typeof args.columns !== 'undefined') ? args.columns : false;
+		args.limit=   ( typeof args.limit !== 'undefined')   ? args.limit   : JQL_LOGGING_LIMIT;
+		// Console
+		let limit = (args.limit < this.length) ? args.limit : this.length;
+		console.group(`%c[JQL] Table – Showing: ${limit} of ${this.length} elements`, JQL_LOGGING_STYLE);
+			console.table(this.limit(args.limit).items, args.columns);
+		console.groupEnd();
+		// Return
 		return;
 	}
 	//#endregion

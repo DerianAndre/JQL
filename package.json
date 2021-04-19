@@ -25,7 +25,7 @@
   ],
   "scripts": {
     "build": "gulp",
-    "size": "npm run build && size-limit"
+    "size": "size-limit"
   },
   "devDependencies": {
     "@size-limit/file": "^4.10.2",
