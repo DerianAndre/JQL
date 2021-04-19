@@ -8,6 +8,12 @@ const variable = false;
 console.log('DATA')
 console.table(data);
 // WHERE
+console.log('\n\nSELECT')
+console.log('query: SELECT *')
+result = JQL(data).select('*').log(); // You don't have to use select('*') but I leave it there if you like MYSQL structure :)
+console.log('query: SELECT name, active')
+result = JQL(data).select('name, active').log();
+// WHERE
 console.log('\n\nWHERE')
 // With a query (simple operators like =, ==, ===, !=, !=, <, >, <=, >=)
 console.log('query: WHERE ${key} ${operator} ${variable}');
@@ -18,17 +24,22 @@ console.log('query: WHERE email ~ youtu.be');
 
 result = JQL(data).where(`${key} ${operator} ${variable}`).count();
 console.log(result);
+
 result = JQL(data).where(`${key} ${operator} ${variable}`).length;
 console.log(result);
 
 console.log('query: WHERE email ~ youtu.be');
 result = JQL(data).where(`email ~ youtu.be`).log();
+
 console.log('query: WHERE active = false');
 result = JQL(data).where(`active = false`).log();
-console.log('');
+
+console.log('Multiples conditions');
 console.log(`query: active == false AND email ~ a`)
 result = JQL(data).where(`active == false && email ~ a`).log();
 console.log('');
+
+console.log('Multiples conditions');
 
 // With a function
 result = JQL(data).where((i) => { return i[key] == variable; });
@@ -38,10 +49,11 @@ console.log('');
 
 // Nesting
 console.log(`\n\nNesting`);
+console.log(`query: SELECT name, active WHERE active = true`);
 result = JQL(data)
-						.where(`${key} ${operator} ${variable}`)
-						.where(`id >= 6`)
-						.log()
+						.select('name, active')
+						.where('active = true')
+						.table()
 
 
 console.log('Logging');

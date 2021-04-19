@@ -15,8 +15,15 @@
     "language",
     "array"
   ],
+  "size-limit": [
+    {
+      "limit": "5 kB",
+      "path": "dist/JQL.min.js"
+    }
+  ],
   "scripts": {
     "build": "gulp",
+    "size": "npm run build && size-limit",
     "pack": "webpack --config=webpack.config.js",
     "build-antlr": "cd src/antlr/bin/ && antlr-4.9.2-complete.jar -Dlanguage=JavaScript -visitor -o ../ ../JQL.g4"
   },
@@ -25,6 +32,7 @@
     "@babel/plugin-proposal-class-properties": "^7.13.0",
     "@babel/plugin-syntax-class-properties": "^7.12.13",
     "@babel/preset-env": "^7.13.15",
+    "@size-limit/file": "^4.10.2",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babelify": "^10.0.0",
     "gulp": "^4.0.2",
@@ -32,6 +40,7 @@
     "gulp-header": "^2.0.9",
     "gulp-rename": "^2.0.0",
     "gulp-uglify": "^3.0.2",
+    "size-limit": "^4.10.2",
     "webpack": "^5.33.2",
     "webpack-cli": "^4.6.0"
   },

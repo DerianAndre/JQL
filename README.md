@@ -16,23 +16,26 @@ Use the following command to build JQL ANTLR files
 # Operators
 Supported operators for expressions are very basic. Use a function for a more complex predicate.
 
-| **Operator type** |  **Symbols**             |
-|-------------------|--------------------------|
-| **`Comparation`** | `~  =  ==  !=  ===  !==` |
-|                   | `<  >  <=  >=`           |
-| **`Logical`**     | `&& \|\|`                |
+## Comparation
+
+`~  =  ==  !=  ===  !==`
+`<  >  <=  >=`
+
+## Logical
+
+`&& ||`
 
 
 # Functions
 
-## Query
+## 🔍 Query
 
 | **Function** | **Description**                                              | **Variable** | **Type**             | **Description (Var)**                                                         |
 |--------------|--------------------------------------------------------------|--------------|----------------------|-------------------------------------------------------------------------------|
-| `.select()`  | Retrieve only the JSON keys                                  | `expression` | `string`, `function` | Expression that you want to select and store into the variables               |
+| `.select()`  | Retrieve only the JSON keys                                  | `expression` | `string`, `array`    | Expression that you want to select and store into the variables               |
 | `.where()`   | Specify a search condition for the keys returned by a query. | `expression` | `string`, `function` | Combination of one or more predicates using the logical operator `&&` or `||` |
 
-## Data
+## 📉 Data
 Get that precious data
 
 | **Function**                           | **Description**                  |
@@ -53,8 +56,7 @@ Get that precious data
 	► Length (n)
 ```
 
-
-## Logging
+## 💻 Logging
 Debug like a pro!
 
 | **Function** | **Description**                                        | **Variable** | **Type**      | **Description (Var)**             |

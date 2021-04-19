@@ -31,38 +31,38 @@
 
 	// Constructor
 	function JQL(array) {
-
 		//Check arguments
 		if (!array || !(array instanceof Array))
-			throw new Error("Data is invalid or is not a valid array");
+			throw new Error("JQL: Data is invalid or is not a valid array");
 
-		// Data
-		// Very streight forward
+		// 📄 Data
+		// 🙄 Very straight forward, duh
 		this.items = array;
 		this.length = array.length;
 
-		// Functions
-		// The magica it's here
+		// 🔍 Functions: Query
+		// ✨ The magic it's here! 
 		this.select=  select;
 		this.where=   where;
 
-		// Get data
-		// I like it this way because if forget things 😪
+		// 📉 Functions: Data
+		// 😪 Yes I know. I like it this way because if forget things...
 		this.data=   data;
 		this.array=  data;
 		this.result= data;
 		this.count=  count;
 
-		// Logging
-		// Debug like a pro 😉
+		// 💻 Functions: Logging
+		// 😉 Debug like a pro!
 		this.log=   log;
 		this.table= table;
 		this.dir=   dir;
 		
-		// Return for chaining
+		// ✅ Return for chaining
 		return this;
 	}
 
+	//#region 🧰 Utilities
 	// Condition
 	// Return true or false depeding on the expression and operator
 	function condition(expression, element) {
@@ -178,12 +178,63 @@
 			}
 		}
 	}
+	//#endregion
 
+	//#region 🔍 Functions: Query
 	// Select
 	// Select keys (Equivalent to SELECT <args> FROM)
 	function select(expression) {
-		if (!expression) return new JQL(result);
+		// Check arguments
+		if( !expression || expression === '*')
+			return new JQL(this.items);
+		if( expression && !( typeof expression === 'string' || typeof expression === 'array' ) ) 
+			throw new Error("JQL: .select() is invalid");
+
+		//Define output array
+		var result = [],
+				item = {},
+				itemData = {};
 		
+		// Make array if
+		if(typeof expression === 'string') {
+			if(expression.split(/[\s,]+/)) {
+				expression = expression.split(/[\s,]+/);
+			} else {
+				expression = [expression];
+			}
+		}
+
+		// Loop trough
+		for (let i = 0, j = 0; i < this.items.length; i++) {
+			//For each element on data
+			let keys = this.items[i];
+			for (let e = 0; e < expression.length; e++) {
+				//Use function to obtain match
+
+
+
+				for(let key in keys) {
+					if(key == expression[e]) {
+						//console.log(this.items[i][key]);
+						itemData[key] = this.items[i][key];
+						item[j] = {...itemData};
+					}
+				}
+
+				if(e == expression.length-1) {
+					result[j] = item[j];
+					j++;
+				}
+				
+				//if(typeof expression === 'string') {
+				//	var match = compare(expression, this.items[i]);
+				//} else {
+				//	var match = expression(this.items[i]);
+				//}
+				//If element match, append
+			}
+		}
+
 		// Return for chaining
 		return new JQL(result);
 	}
@@ -191,8 +242,7 @@
 	// Where: Select elements that match expression by a qery string or a function
 	function where(expression) {
 		// Check arguments
-		if (!expression) throw new Error("Expression is invalid");
-		
+		if (!expression) throw new Error("WHERE: Is invalid");
 		//Define output array
 		var result = [];
 
@@ -212,20 +262,23 @@
 		//Return for chaining
 		return new JQL(result);
 	}
+	//#endregion
 
-	// Count
-	// Returns length of the array
-	function count() {
-		return this.length;
-	}
-
+	//#region 📉 Functions: Data
 	// Data
 	// Returns data
 	function data() {
 		return this.items;
 	}
 
-	//#region Logging
+	// Count
+	// Returns length of the array
+	function count() {
+		return this.length;
+	}
+	//#endregion
+
+	//#region 📖 Functions: Logging
 	// Dir
 	// console.dir() for items
 	function dir(object = false) {
@@ -249,12 +302,11 @@
 	}
 	//#endregion
 
-	// Constructor
-	// Constructor instance
+	// ✅ Constructor
 	function constructor(array) {
 		return new JQL(array);
 	}
 
-	// Exports functions
+	// ✅ Exports functions
 	return constructor;
 }));
