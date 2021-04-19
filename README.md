@@ -51,37 +51,37 @@ Supported operators for expressions are very basic. Use a function for a more co
 Carefull with this, is not the same as MYSQL!
 
 ```javascript
-	JQL(data).select('id, active').where('id > 5 && active == false').log();
-	► (2) [
-		0: { "id": 6, "active": false },
-		1: { "id": 7, "active": false }
-	]
-	
-	JQL(data).select('id, active').where('id > 5 && active == false').log();
-	► (2) [
-		0: { "name": "Tymothy Wingar", "id": 6 },
-		1: { "name": "Carolus Walworche", "id": 7 }
-	]
+JQL(data).select('id, active').where('id > 5 && active == false').log();
+► (2) [
+	0: { "id": 6, "active": false },
+	1: { "id": 7, "active": false }
+]
+
+JQL(data).select('id, active').where('id > 5 && active == false').log();
+► (2) [
+	0: { "name": "Tymothy Wingar", "id": 6 },
+	1: { "name": "Carolus Walworche", "id": 7 }
+]
 ```
 
 ### `.where()`
 You can use multiple conditions, as a string or you can use a function.
 ```javascript
-	// With a query
-	JQL(data).where('email ~ a && active == false').log();
+// With a query
+JQL(data).where('email ~ a && active == false').log();
 
-	// With a function
-	JQL(data).where((i) => {
-		return (i.email.includes('a') && i.active == false)           // .  notation
-		// return (i['email'].includes('a') && i['active'] == false)  // [] notation
-	}).log();
+// With a function
+JQL(data).where((i) => {
+	return (i.email.includes('a') && i.active == false)           // .  notation
+	// return (i['email'].includes('a') && i['active'] == false)  // [] notation
+}).log();
 
-	// Both will have the same result:
-	► (3) [
-		0: { "id": 4, "name": "Edie Cardiff", "email": "ecardiff3@about.com", "active": false },
-		1: { "id": 6, "name": "Tymothy Wingar", "email": "twingar5@usda.gov", "active": false },
-		2: { "id": 7, "name": "Carolus Walworche", "email": "cwalworche6@economist.com", "active": false }
-	]
+// Both will have the same result:
+► (3) [
+	0: { "id": 4, "name": "Edie Cardiff", "email": "ecardiff3@about.com", "active": false },
+	1: { "id": 6, "name": "Tymothy Wingar", "email": "twingar5@usda.gov", "active": false },
+	2: { "id": 7, "name": "Carolus Walworche", "email": "cwalworche6@economist.com", "active": false }
+]
 ```
 
 ## 📉 Data
@@ -94,15 +94,15 @@ Get that precious data
 
 ### `.data()` or `.array()` or `.result()`
 ```javascript
-	let result = JQL(JSON).items; // JQL(JSON).data();
-	console.log(result);
-	► (n) [{…}, {…}, {…}, …]
+let result = JQL(JSON).items; // JQL(JSON).data();
+console.log(result);
+► (n) [{…}, {…}, {…}, …]
 ```
 
 ### `.count()`
 ```javascript
-	result.count(); // console.log(result.lenth);
-	► Length (n)
+result.count(); // console.log(result.lenth);
+► Length (n)
 ```
 
 ## 💻 Logging
@@ -116,25 +116,24 @@ Debug like a pro!
 
 ### `.log()`
 ```javascript
-	let result = JQL(JSON).log()
-	► (n) [{…}, {…}, {…}, …]
+let result = JQL(JSON).log()
+► (n) [{…}, {…}, {…}, …]
 
-	let result = JQL(JSON).log(false);
-	► i {items: Array(4), length: 4, select: ƒ, where: ƒ, data: ƒ, …}
+let result = JQL(JSON).log(false);
+► i {items: Array(4), length: 4, select: ƒ, where: ƒ, data: ƒ, …}
 ```
 
 ### `.table()`
 ```javascript
-	let result = JQL(JSON).table(['id', 'email']);
+let result = JQL(JSON).table(['id', 'email']);
 
-	| id | email                      |
-	|----|----------------------------|
-	| 0  | anelsen0@printfriendly.com |
-	| 1  | dmadgett1@youtu.be         |
-	...
-	► Array(n)
+| id | email                      |
+|----|----------------------------|
+| 0  | anelsen0@printfriendly.com |
+| 1  | dmadgett1@youtu.be         |
+|... | ...                        |
+► Array(n)
 ```
-
 
 # Why tho?
 I have another project that I made with an API (express) and MongoDB (mongoose) and I wanted to have

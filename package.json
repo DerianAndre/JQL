@@ -4,16 +4,18 @@
   "description": "A simple intuitive JSON Query Language inspired by MySQL and jslinq made in javascript.",
   "main": "src/JQL.js",
   "author": "DerianAndre",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/DerianAndre/JQL.git"
   },
-  "license": "MIT",
   "keywords": [
+    "jql",
     "json",
     "query",
     "language",
-    "array"
+    "array",
+    "json query"
   ],
   "size-limit": [
     {
@@ -23,29 +25,14 @@
   ],
   "scripts": {
     "build": "gulp",
-    "size": "npm run build && size-limit",
-    "pack": "webpack --config=webpack.config.js",
-    "build-antlr": "cd src/antlr/bin/ && antlr-4.9.2-complete.jar -Dlanguage=JavaScript -visitor -o ../ ../JQL.g4"
+    "size": "npm run build && size-limit"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.15",
-    "@babel/plugin-proposal-class-properties": "^7.13.0",
-    "@babel/plugin-syntax-class-properties": "^7.12.13",
-    "@babel/preset-env": "^7.13.15",
     "@size-limit/file": "^4.10.2",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babelify": "^10.0.0",
     "gulp": "^4.0.2",
-    "gulp-config-sync": "^1.0.2",
     "gulp-header": "^2.0.9",
     "gulp-rename": "^2.0.0",
     "gulp-uglify": "^3.0.2",
-    "size-limit": "^4.10.2",
-    "webpack": "^5.33.2",
-    "webpack-cli": "^4.6.0"
-  },
-  "dependencies": {
-    "@tarp/require": "^1.4.3",
-    "antlr4": "^4.9.2"
+    "size-limit": "^4.10.2"
   }
 }
