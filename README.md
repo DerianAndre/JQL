@@ -1,8 +1,7 @@
 <div align="center">
-<img src="JQL.svg" width="295" height="100" alt="JQL logo"/>
+<img src="JQL.svg" width="221.5px" height="75px" alt="JQL logo"/>
 
-# JQL
-## JSON Query Language
+# JQL – JSON Query Language
 
 A simple intuitive JSON Query Language inspired by [MySQL](https://www.mysql.com/) and [jslinq](https://github.com/maurobussini/jslinq) made in javascript.
 
