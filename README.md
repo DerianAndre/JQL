@@ -1,6 +1,5 @@
 <div align="center">
-![alt text](JQL.svg "JQL Logo")
-
+<img src="jql.svg" width="295" height="100" alt="JQL logo"/>
 
 # JQL
 ## JSON Query Language
