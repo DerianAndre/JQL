@@ -25,6 +25,18 @@ Supported operators for expressions are very basic. Use a function for a more co
 
 `&& ||`
 
+# Example Data
+```json
+[
+	{ "id": 1, "name": "Aleta Nelsen", "email": "anelsen0@printfriendly.com", "active": true },
+	{ "id": 2, "name": "Davidde Madgett", "email": "dmadgett1@youtu.be", "active": true },
+	{ "id": 3, "name": "Monty Gulston", "email": "mgulston2@hostgator.com", "active": true },
+	{ "id": 4, "name": "Edie Cardiff", "email": "ecardiff3@about.com", "active": false },
+	{ "id": 5, "name": "Kim Guion", "email": "kguion4@youtu.be", "active": false },
+	{ "id": 6, "name": "Tymothy Wingar", "email": "twingar5@usda.gov", "active": false },
+	{ "id": 7, "name": "Carolus Walworche", "email": "cwalworche6@economist.com", "active": false }
+]
+```
 
 # Functions
 
@@ -35,6 +47,43 @@ Supported operators for expressions are very basic. Use a function for a more co
 | `.select()`  | Retrieve only the JSON keys                                  | `expression` | `string`, `array`    | Expression that you want to select and store into the variables               |
 | `.where()`   | Specify a search condition for the keys returned by a query. | `expression` | `string`, `function` | Combination of one or more predicates using the logical operator `&&` or `||` |
 
+### `.select()`
+Carefull with this, is not the same as MYSQL!
+
+```javascript
+	JQL(data).select('id, active').where('id > 5 && active == false').log();
+	► (2) [
+		0: { "id": 6, "active": false },
+		1: { "id": 7, "active": false }
+	]
+	
+	JQL(data).select('id, active').where('id > 5 && active == false').log();
+	► (2) [
+		0: { "name": "Tymothy Wingar", "id": 6 },
+		1: { "name": "Carolus Walworche", "id": 7 }
+	]
+```
+
+### `.where()`
+You can use multiple conditions, as a string or you can use a function.
+```javascript
+	// With a query
+	JQL(data).where('email ~ a && active == false').log();
+
+	// With a function
+	JQL(data).where((i) => {
+		return (i.email.includes('a') && i.active == false)           // .  notation
+		// return (i['email'].includes('a') && i['active'] == false)  // [] notation
+	}).log();
+
+	// Both will have the same result:
+	► (3) [
+		0: { "id": 4, "name": "Edie Cardiff", "email": "ecardiff3@about.com", "active": false },
+		1: { "id": 6, "name": "Tymothy Wingar", "email": "twingar5@usda.gov", "active": false },
+		2: { "id": 7, "name": "Carolus Walworche", "email": "cwalworche6@economist.com", "active": false }
+	]
+```
+
 ## 📉 Data
 Get that precious data
 
@@ -44,14 +93,14 @@ Get that precious data
 | `.count()`                             | Get the items.lenght             |
 
 ### `.data()` or `.array()` or `.result()`
-```
+```javascript
 	let result = JQL(JSON).items; // JQL(JSON).data();
 	console.log(result);
 	► (n) [{…}, {…}, {…}, …]
 ```
 
 ### `.count()`
-```
+```javascript
 	result.count(); // console.log(result.lenth);
 	► Length (n)
 ```
@@ -66,7 +115,7 @@ Debug like a pro!
 | `.table()`   | Do a `console.table()`                                 | `columns`  | `array, string` | Columns to show                   |
 
 ### `.log()`
-```
+```javascript
 	let result = JQL(JSON).log()
 	► (n) [{…}, {…}, {…}, …]
 
@@ -75,11 +124,11 @@ Debug like a pro!
 ```
 
 ### `.table()`
-```
+```javascript
 	let result = JQL(JSON).table(['id', 'email']);
 
 	| id | email                      |
-	|----| ---------------------------|
+	|----|----------------------------|
 	| 0  | anelsen0@printfriendly.com |
 	| 1  | dmadgett1@youtu.be         |
 	...

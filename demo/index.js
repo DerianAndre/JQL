@@ -42,9 +42,8 @@ console.log('');
 console.log('Multiples conditions');
 
 // With a function
-result = JQL(data).where((i) => { return i[key] == variable; });
 console.log(`function: ${key} == ${variable}`);
-result.log();
+result = JQL(data).where((i) => { return i[key] == variable; }).log();
 console.log('');
 
 // Nesting
