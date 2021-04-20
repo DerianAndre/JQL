@@ -1,23 +1,8 @@
 // Contants
-const JQL_LOGGING_STYLE = 'margin: -4px 0 -3px; padding: 6px 15px; background: rgb(15,70,150); color: white; border: 1px solid #555;';
 const JQL_LOGGING_LIMIT = 10;
-// Contants: Operators
-const JQL_OPERATORS_ARRAY = [
-	'~', '~~',
-	'=', '==', '===',
-	'!=', '!==',
-	'<', '>', 
-	'<=', '>=',
-];
-// Contants: Conditions
-const JQL_CONDITIONS_ARRAY = [
-	'&&', '||'
-];
 // Contants Make them regex ready
-const JQL_OPERATORS  = JQL_OPERATORS_ARRAY.map(function(op) { return '\\' + op; }).join('|');
-const JQL_CONDITIONS = JQL_CONDITIONS_ARRAY.map(function(op) { return '\\' + op; }).join('|');
-const JQL_OPERATORS_REGEX = `(\\w+) (${JQL_OPERATORS}) (\\w+)`;
-const JQL_CONDITIONS_REGEX = `(?:${JQL_OPERATORS_REGEX})*(${JQL_CONDITIONS})*`;
+const JQL_OPERATORS  = `(\\w+) (\~|\~~|\=|\==|\===|\!=|\!==|\<|\>|\<=|\>=) (\\w+)`;
+const JQL_CONDITIONS = `(?:${JQL_OPERATORS})*(\&&|\||)*`;
 
 (function (root, factory) {
 	//UMD - Universal Module Definition
@@ -63,11 +48,20 @@ const JQL_CONDITIONS_REGEX = `(?:${JQL_OPERATORS_REGEX})*(${JQL_CONDITIONS})*`;
 	}
 
 	//#region 🧰 Utilities
+	function logger(title, info, content) {
+		console.group(
+			`%c[JQL] ${title} – ${info}`,
+			'padding: 8px 15px; color: white; background: #111; background: linear-gradient(90deg, #E58E03 2.5%, #111 2.5%, #111 97.5%, #E58E03 97.5%);'
+		);
+			content();
+		console.groupEnd();
+		return;
+	}
 	// Condition
 	// Return true or false depeding on the expression and operator
 	function condition(expression, element) {
 		let m, matches = [];
-		const	regex = new RegExp(JQL_OPERATORS_REGEX, 'gm');
+		const	regex = new RegExp(JQL_OPERATORS, 'gm');
 		while ((m = regex.exec(expression)) !== null) {
 			// This is necessary to avoid infinite loops with zero-width matches
 			if (m.index === regex.lastIndex) {
@@ -115,7 +109,7 @@ const JQL_CONDITIONS_REGEX = `(?:${JQL_OPERATORS_REGEX})*(${JQL_CONDITIONS})*`;
 
 		// Get matches
 		let regexMatch, matches = [];
-		const	regex = new RegExp(JQL_CONDITIONS_REGEX, 'gm');
+		const	regex = new RegExp(JQL_CONDITIONS, 'gm');
 		while (regexMatch = regex.exec(expression)) {
 			// This is necessary to avoid infinite loops with zero-width matches
 			if (regexMatch.index === regex.lastIndex) {
@@ -271,17 +265,19 @@ const JQL_CONDITIONS_REGEX = `(?:${JQL_OPERATORS_REGEX})*(${JQL_CONDITIONS})*`;
 		args.items=   ( typeof args.items !== 'undefined')   ? args.items   : true;
 		args.limit=   ( typeof args.limit !== 'undefined')   ? args.limit   : JQL_LOGGING_LIMIT;
 		args.options= ( typeof args.options !== 'undefined') ? args.options : false;
+		let title = 'Dir', limit, info, log;
 		// Console
 		if(typeof args.items === 'boolean' && args.items) {
-			let limit = (args.limit < this.length) ? args.limit : this.length;
-			console.group(`%c[JQL] Dir – Showing: ${limit} of ${this.length} elements`, JQL_LOGGING_STYLE);
-				console.dir(this.limit(args.limit).items, args.options);
-			console.groupEnd();
+			limit = (args.limit < this.length) ? args.limit : this.length;
+			info = `Showing: ${limit} of ${this.length} elements`;
+			log = this.limit(args.limit).items;
 		} else {
-			console.group(`%c[JQL] Dir – Constructor`, JQL_LOGGING_STYLE);
-				console.log(this);
-			console.groupEnd();
+			info = `Constructor`;
+			log = this;
 		}
+		logger(title, info, () => { 
+			console.dir(log, args.options) 
+		});
 		// Return
 		return;
 	}
@@ -292,17 +288,19 @@ const JQL_CONDITIONS_REGEX = `(?:${JQL_OPERATORS_REGEX})*(${JQL_CONDITIONS})*`;
 		// Arguments
 		args.items= ( typeof args.items !== 'undefined') ? args.items : true;
 		args.limit= ( typeof args.limit !== 'undefined') ? args.limit : JQL_LOGGING_LIMIT;
+		let title = 'Log', limit, info, log;
 		// Console
 		if(typeof args.items === 'boolean' && args.items) {
-			let limit = (args.limit < this.length) ? args.limit : this.length;
-			console.group(`%c[JQL] Log – Showing: ${limit} of ${this.length} elements`, JQL_LOGGING_STYLE);
-				console.log(this.limit(args.limit).items);
-			console.groupEnd();
+			limit = (args.limit < this.length) ? args.limit : this.length;
+			info = `Showing: ${limit} of ${this.length} elements`;
+			log = this.limit(args.limit).items;
 		} else {
-			console.group(`%c[JQL] Log – Constructor`, JQL_LOGGING_STYLE);
-				console.log(this);
-			console.groupEnd();
+			info = `Constructor`;
+			log = this;
 		}
+		logger(title, info, () => { 
+			console.log(log);
+		});
 		// Return
 		return;
 	}
@@ -314,10 +312,12 @@ const JQL_CONDITIONS_REGEX = `(?:${JQL_OPERATORS_REGEX})*(${JQL_CONDITIONS})*`;
 		args.columns= ( typeof args.columns !== 'undefined') ? args.columns : false;
 		args.limit=   ( typeof args.limit !== 'undefined')   ? args.limit   : JQL_LOGGING_LIMIT;
 		// Console
-		let limit = (args.limit < this.length) ? args.limit : this.length;
-		console.group(`%c[JQL] Table – Showing: ${limit} of ${this.length} elements`, JQL_LOGGING_STYLE);
+		let limit = (args.limit < this.length) ? args.limit : this.length,
+				title = 'Table',
+				info  = `Showing: ${limit} of ${this.length} elements`;
+		logger(title, info, () => { 
 			console.table(this.limit(args.limit).items, args.columns);
-		console.groupEnd();
+		});
 		// Return
 		return;
 	}

@@ -15,7 +15,7 @@ result = JQL(data).select('name, active').log({ items: false});
 // WHERE
 console.log('\n\nWHERE')
 // With a query (simple operators like =, ==, ===, !=, !=, <, >, <=, >=)
-console.log('query: WHERE ${key} ${operator} ${variable}');
+console.log(`query: WHERE ${key} ${operator} ${variable}`);
 result = JQL(data).where(`${key} ${operator} ${variable}`).dir();
 result = JQL(data).where(`${key} ${operator} ${variable}`).dir({ items: false });
 result = JQL(data).where(`${key} ${operator} ${variable}`).log();
