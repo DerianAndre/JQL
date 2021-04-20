@@ -7,14 +7,14 @@
  * @built      : 19/4/2021
  * @license    : MIT
  */
-// Contants
+// JQL - Options
 const JQL_LOGGING_LIMIT = 10;
-// Contants Make them regex ready
+// JQL - Operators
 const JQL_OPERATORS  = `(\\w+) (\~|\~~|\=|\==|\===|\!=|\!==|\<|\>|\<=|\>=) (\\w+)`;
 const JQL_CONDITIONS = `(?:${JQL_OPERATORS})*(\&&|\||)*`;
 
+//UMD - Universal Module Definition
 (function (root, factory) {
-	//UMD - Universal Module Definition
 	if (typeof define === 'function' && define.amd) {
 		define([], factory);
 	} else if (typeof exports === 'object') {
@@ -41,8 +41,8 @@ const JQL_CONDITIONS = `(?:${JQL_OPERATORS})*(\&&|\||)*`;
 		this.limit=  limit;
 		// 📉 Functions: Data
 		// 😪 Yes I know. I like it this way because if forget things...
-		this.data=   data;
 		this.array=  data;
+		this.data=   data;
 		this.result= data;
 		this.count=  count;
 
@@ -60,7 +60,7 @@ const JQL_CONDITIONS = `(?:${JQL_OPERATORS})*(\&&|\||)*`;
 	function logger(title, info, content) {
 		console.group(
 			`%c[JQL] ${title} – ${info}`,
-			'padding: 8px 15px; color: white; background: #111; background: linear-gradient(90deg, #E58E03 2.5%, #111 2.5%, #111 97.5%, #E58E03 97.5%);'
+			'padding: 7px 20px; font-size: 13px; color: white; background: #111; background: linear-gradient(90deg, #E58E03 2.5%, #111 2.5%, #111 97.5%, #E58E03 97.5%);'
 		);
 			content();
 		console.groupEnd();
@@ -274,7 +274,7 @@ const JQL_CONDITIONS = `(?:${JQL_OPERATORS})*(\&&|\||)*`;
 		args.items=   ( typeof args.items !== 'undefined')   ? args.items   : true;
 		args.limit=   ( typeof args.limit !== 'undefined')   ? args.limit   : JQL_LOGGING_LIMIT;
 		args.options= ( typeof args.options !== 'undefined') ? args.options : false;
-		let title = 'Dir', limit, info, log;
+		let title = 'Dir', info, limit, log;
 		// Console
 		if(typeof args.items === 'boolean' && args.items) {
 			limit = (args.limit < this.length) ? args.limit : this.length;
@@ -297,7 +297,7 @@ const JQL_CONDITIONS = `(?:${JQL_OPERATORS})*(\&&|\||)*`;
 		// Arguments
 		args.items= ( typeof args.items !== 'undefined') ? args.items : true;
 		args.limit= ( typeof args.limit !== 'undefined') ? args.limit : JQL_LOGGING_LIMIT;
-		let title = 'Log', limit, info, log;
+		let title = 'Log', info, limit, log;
 		// Console
 		if(typeof args.items === 'boolean' && args.items) {
 			limit = (args.limit < this.length) ? args.limit : this.length;

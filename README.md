@@ -1,5 +1,5 @@
 <div align="center">
-<img src="JQL.svg" width="221.5px" height="75px" alt="JQL logo"/>
+<img src="JQL.svg" width="200px" alt="JQL logo"/>
 
 # JQL – JSON Query Language
 
@@ -37,25 +37,26 @@ Supported operators for expressions are very basic. Use a function for a more co
 
 ## 🔍 Query
 
-| **Function** | **Description**                                              | **Variable** | **Type**             | **Description (Var)**                                                         |
-|--------------|--------------------------------------------------------------|--------------|----------------------|-------------------------------------------------------------------------------|
-| `.select()`  | Retrieve only the JSON keys                                  | `expression` | `string`, `array`    | Expression that you want to select and store into the variables               |
-| `.where()`   | Specify a search condition for the keys returned by a query. | `expression` | `string`, `function` | Combination of one or more predicates using the logical operator `&&` or `||` |
+| **Function** | **Description**                                              | **Variable** | **Type**             | **Description (Var)**                                             |
+|--------------|--------------------------------------------------------------|--------------|----------------------|-------------------------------------------------------------------|
+| `.select()`  | Retrieve only the JSON keys                                  | `expression` | `string`, `array`    | Expression that you want to select and store into the variables   |
+| `.where()`   | Specify a search condition for the keys returned by a query. | `expression` | `string`, `function` | Combination of one or more predicates using the logical operators |
 
 ### `.select()`
-Carefull with this, is not the same as MYSQL!
+Carefull with this, is not the same as MYSQL! **The order matters.**
 
 ```javascript
-JQL(data).select('id, active').where('id > 5 && active == false').log();
-► (2) [
-	0: { "id": 6, "active": false },
-	1: { "id": 7, "active": false }
-]
+JQL(data).select('name, active').where('id > 5 && active == false').limit(5).log();
+► (0) []
+// Because first .select() will give you an array with two columns and then you are trying to do a where with id that isn't in the array
 
-JQL(data).select('id, active').where('id > 5 && active == false').log();
-► (2) [
-	0: { "name": "Tymothy Wingar", "id": 6 },
-	1: { "name": "Carolus Walworche", "id": 7 }
+JQL(data).where('id > 5 && active == false').select('name, active').limit(5).log();
+► (5) [
+	0: {name: "Eugenio Goodall", active: false}
+	1: {name: "Dorian Simonnot", active: false}
+	2: {name: "Cyb Botwood", active: false}
+	3: {name: "Jandy Eddoes", active: false}
+	4: {name: "Connie Riddoch", active: false}
 ]
 ```
 
@@ -103,13 +104,35 @@ result.count(); // console.log(result.lenth);
 ## 💻 Logging
 Debug like a pro!
 
-| **Function** | **Description**                                        | **Variable** | **Type** | **Description (Var)**                   |
+| **Function** | **Description**                                        | **Variable** | **Type** | **Default**                             |
 |--------------|--------------------------------------------------------|--------------|----------|-----------------------------------------|
 | `.dir()`     | Do a `console.dir()`                                   | `args`       | `object` | { items: true, limit: 10, options: {} } |
 | `.log()`     | Do a `console.log()` for items or constructor function | `args`       | `object` | { items: true, limit: 10 }    					|
 | `.table()`   | Do a `console.table()`                                 | `args`       | `object` | { columns: false, limit: 10 } 					|
 
+### `.dir()`
+#### Arguments
+| Argument | Default | Type    | Description                                   |
+|----------|---------|---------|-----------------------------------------------|
+| items    | true    | boolean | Log: items (true) / constructor (false)       |
+| limit    | 10      | integer | The number of elements that the log will show |
+| options  | {}      | object  | Options of console.dir()                      |
+#### Example
+```javascript
+let result = JQL(JSON).log()
+► (n) [{…}, {…}, {…}, …]
+
+let result = JQL(JSON).log(false);
+► i {items: Array(4), length: 4, select: ƒ, where: ƒ, data: ƒ, …}
+```
+
 ### `.log()`
+#### Arguments
+| Argument | Default | Type    | Description                                   |
+|----------|---------|---------|-----------------------------------------------|
+| items    | true    | boolean | Log: items (true) / constructor (false)       |
+| limit    | 10      | integer | The number of elements that the log will show |
+#### Example
 ```javascript
 let result = JQL(JSON).log()
 ► (n) [{…}, {…}, {…}, …]
@@ -119,6 +142,12 @@ let result = JQL(JSON).log(false);
 ```
 
 ### `.table()`
+#### Arguments
+| Argument | Default | Type          | Description                                   |
+|----------|---------|---------------|-----------------------------------------------|
+| columns  | false   | string, array | Columns of the table to show                  |
+| limit    | 10      | integer       | The number of elements that the log will show |
+#### Example
 ```javascript
 let result = JQL(JSON).table(['id', 'email']);
 
@@ -127,17 +156,19 @@ let result = JQL(JSON).table(['id', 'email']);
 | 0  | anelsen0@printfriendly.com |
 | 1  | dmadgett1@youtu.be         |
 |... | ...                        |
-► Array(n)
+► Array (n)
 ```
 
 # Why tho?
-I have another project that I made with an API (express) and MongoDB (mongoose) and I wanted to have
-offline support when I exported my WebApp with Capacitorjs as an Android "native" App.
-The problem was that there is no way to have an nodejs server inside the App so I can't use the express API
-so I figuered out that I can export my DB with a Node command and save it inside my static folder so I can use JSON as an static database right? pretty simple.
+I have another project that I made with an API (express) and MongoDB (mongoose) and I wanted to have offline support when I exported my WebApp with Capacitorjs as an Android "native" App. The problem was that there is no way to have a nodejs server inside the App so I can't use the express API so I figuered out that I can export my DB with a Node command and save it inside my static folder so I can use JSON as an static database right? pretty simple.
 
-Then I got into JSLINQ and it's pretty much what I needed. But I just like to have somethings my way and that's it haha.
+Then I got into JSLINQ and it's pretty much what I needed. **But I just like to have somethings my way** and that's it haha.
 
 **TL;DR:** I just wanted to make things in my on way and to learn about how to do it in the process.
 
 **Big thanks to JSLINQ for their awesome work and being open-source.**
+
+<div align="center">
+  <img style="margin-top: 2rem" src="JQL.svg" width="75px" alt="JQL"/><br>
+  <img style="margin-top: 1rem" src="https://derianandre.com/assets/brand/logo-responsive-theme.svg" width="25px" alt="Derian André"/>
+</div>
