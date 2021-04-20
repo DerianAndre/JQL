@@ -168,7 +168,7 @@ Then I got into JSLINQ and it's pretty much what I needed. **But I just like to 
 
 **Big thanks to JSLINQ for their awesome work and being open-source.**
 
-<div align="center">
-  <img style="margin-top: 2rem" src="JQL.svg" width="75px" alt="JQL"/><br>
+<div align="center"><br>
+  <img style="margin-top: 2rem" src="JQL.svg" width="100px" alt="JQL"/><br><br>
   <img style="margin-top: 1rem" src="https://derianandre.com/assets/brand/logo-responsive-theme.svg" width="25px" alt="Derian André"/>
 </div>
