@@ -19,12 +19,17 @@ With JQL this can be done like this:
 ```javascript
 // This works:
 JQL(data).select('*').where(`active = true || email ~ ${email}`).limit(5);
+
 // This also works:
+	// ✅ Smaller footprint 😏
+	// ✅ You can remove .select('*') as we already have all the data 🙄
+	// ✅ You can also use: AND or &&, OR or || 🥵
 JQL(data).where(`active = true OR email ~ ${email}`).limit(5);
-// You can remove .select('*') as we already have all the data.
-// You can use: OR or ||, AND or &&
+
 // Or with a function like this:
-JQL(data).where((i) => { return i.email.contains(email) || i.active == true; }).limit(5);
+JQL(data).where((i) => { 
+	return i.email.contains(email) || i.active == true;
+}).limit(5);
 ```
 
 # Operators
