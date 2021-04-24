@@ -7,7 +7,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/DerianAndre/JQL.git"
+    "url":  "https://github.com/DerianAndre/JQL.git"
   },
   "keywords": [
     "jql",
@@ -15,17 +15,19 @@
     "query",
     "language",
     "array",
-    "json query"
+    "json query",
+    "json mysql",
+    "json linq"
   ],
   "size-limit": [
     {
-      "limit": "5 kB",
-      "path": "dist/JQL.min.js"
+      "limit": "10 kB",
+      "path":  "dist/JQL.min.js"
     }
   ],
   "scripts": {
     "build": "gulp",
-    "size": "size-limit"
+    "size":  "size-limit"
   },
   "devDependencies": {
     "@size-limit/file": "^4.10.2",

@@ -1,8 +1,13 @@
 // JQL - Options
-const JQL_LOGGING_LIMIT = 10;
+const JQL_LOGGING_ITEMS=    true;
+const JQL_LOGGING_COLUMNS=  false;
+const JQL_LOGGING_COLLAPSE= true;
+const JQL_LOGGING_LIMIT=    false;
 // JQL - Operators
-const JQL_OPERATORS  = `(\\w+) (\~|\~~|\=|\==|\===|\!=|\!==|\<|\>|\<=|\>=) (\\w+)`;
-const JQL_CONDITIONS = `(?:${JQL_OPERATORS})*(\&&|\||)*`;
+const JQL_OP_COMPARE= `\~|\~~|\=|\==|\===|\!=|\!==|\<|\>|\<=|\>=`;
+const JQL_OP_LOGICAL= `AND|\&\&|OR|[\|]{2}`;
+const JQL_OPERATORS=  `(\\w+) (${JQL_OP_COMPARE}) (\\w+)`;
+const JQL_CONDITIONS= `(?:${JQL_OPERATORS})*(${JQL_OP_LOGICAL})*`;
 
 //UMD - Universal Module Definition
 (function (root, factory) {
@@ -18,7 +23,7 @@ const JQL_CONDITIONS = `(?:${JQL_OPERATORS})*(\&&|\||)*`;
 	function JQL(array) {
 		//Check arguments
 		if (!array || !(array instanceof Array))
-			throw new Error("JQL: Invalid array");
+			throw new Error("[JQL] Invalid array");
 
 		// 📄 Data
 		// 🙄 Very straight forward, duh
@@ -36,6 +41,8 @@ const JQL_CONDITIONS = `(?:${JQL_OPERATORS})*(\&&|\||)*`;
 		this.data=   data;
 		this.result= data;
 		this.count=  count;
+		this.first=  first;
+		this.last=   last;
 
 		// 💻 Functions: Logging
 		// 😉 Debug like a pro!
@@ -48,15 +55,6 @@ const JQL_CONDITIONS = `(?:${JQL_OPERATORS})*(\&&|\||)*`;
 	}
 
 	//#region 🧰 Utilities
-	function logger(title, info, content) {
-		console.group(
-			`%c[JQL] ${title} – ${info}`,
-			'padding: 7px 20px; font-size: 13px; color: white; background: #111; background: linear-gradient(90deg, #E58E03 2.5%, #111 2.5%, #111 97.5%, #E58E03 97.5%);'
-		);
-			content();
-		console.groupEnd();
-		return;
-	}
 	// Condition
 	// Return true or false depeding on the expression and operator
 	function condition(expression, element) {
@@ -108,42 +106,68 @@ const JQL_CONDITIONS = `(?:${JQL_OPERATORS})*(\&&|\||)*`;
 			return false;
 
 		// Get matches
-		let regexMatch, matches = [];
-		const	regex = new RegExp(JQL_CONDITIONS, 'gm');
-		while (regexMatch = regex.exec(expression)) {
+		let matches = [],
+				regexMatch,
+				regexConditions = new RegExp(JQL_CONDITIONS, 'gm');
+		while (regexMatch = regexConditions.exec(expression)) {
 			// This is necessary to avoid infinite loops with zero-width matches
-			if (regexMatch.index === regex.lastIndex) {
-				regex.lastIndex++;
+			if (regexMatch.index === regexConditions.lastIndex) {
+				regexConditions.lastIndex++;
 			}
 			// The result can be accessed through the matches
 			if(regexMatch[0]) {
 				matches.push(regexMatch[0]);
 			}
 		}
+		
+		// If we only have one expression
+		if(matches.length == 1) {
+			return condition(matches, element);
+		}
 
 		// Push to booleans array
-		let booleans = [];
+		let booleans = [],
+				regexLogic = new RegExp(JQL_OP_LOGICAL, 'gm');
 		for (let i = 0; i < matches.length; i++) {
-			const item = matches[i];
-			if(item.length > 2) {
-				booleans.push(condition(item, element));
+			// Just compare expressions not logical operators
+			if(!regexLogic.exec(matches[i])) {
+				booleans.push(condition(matches[i], element));
 			}
 		}
 
-		// Check conditional operators
-		if(matches.includes('&&')) {
-			if(booleans.includes(false)) {
-				return false;
-			} else {
-				return true;
-			}
-		} else {
-			if(booleans.includes(true)) {
-				return true;
-			} else {
-				return false;
-			}
+		// Condition must be 3 elements (A OP B)
+		if(matches.length % 2 == 0)
+			throw new Error(`[JQL] expression "${expression}" is invalid`);
+		switch (matches[1]) {
+			// AND
+			case '&&': case 'AND':
+				if(booleans.includes(false))
+					return false;
+				else
+					return true;
+			break;
+			// OR
+			case '||': case 'OR':
+				if(booleans.includes(true))
+					return true;
+				else
+					return false;
+			// Default
+			default: return false;
 		}
+	}
+
+	// Splitter
+	// This function allows to input a string or an array to work with expressions.
+	// 'id, name' or ['id', 'name']
+	function splitter(string) {
+		if(typeof string === 'string') {
+			if(string.split(/[\s,]+/))
+				return string.split(/[\s,]+/);
+			else
+				return [string];
+		}
+		return string;
 	}
 	//#endregion
 
@@ -155,21 +179,15 @@ const JQL_CONDITIONS = `(?:${JQL_OPERATORS})*(\&&|\||)*`;
 		if( !expression || expression === '*')
 			return new JQL(this.items);
 		if( expression && !( typeof expression === 'string' || typeof expression === 'array' ) ) 
-			throw new Error("JQL: .select() is invalid");
+			throw new Error("[JQL] .select() is invalid");
 
 		//Define output array
 		var result = [],
 				item = {},
 				itemData = {};
 
-		// Make array if
-		if(typeof expression === 'string') {
-			if(expression.split(/[\s,]+/)) {
-				expression = expression.split(/[\s,]+/);
-			} else {
-				expression = [expression];
-			}
-		}
+		// Make array if it's a string
+		expression = splitter(expression);
 
 		// Loop trough
 		for (let i = 0, j = 0; i < this.items.length; i++) {
@@ -200,7 +218,7 @@ const JQL_CONDITIONS = `(?:${JQL_OPERATORS})*(\&&|\||)*`;
 	// Select elements that match expression by a qery string or a function
 	function where(expression) {
 		// Check arguments
-		if (!expression) throw new Error("JQL: .where() Is invalid");
+		if (!expression) throw new Error("[JQL] .where() Is invalid");
 
 		//For each element on data
 		var result = [];
@@ -241,6 +259,7 @@ const JQL_CONDITIONS = `(?:${JQL_OPERATORS})*(\&&|\||)*`;
 		//Return for chaining
 		return new JQL(limit);
 	}
+
 	//#endregion
 
 	//#region 📉 Functions: Data
@@ -255,70 +274,132 @@ const JQL_CONDITIONS = `(?:${JQL_OPERATORS})*(\&&|\||)*`;
 	function count() {
 		return this.length;
 	}
+
+	// First
+	// Return first element of array as a new JQL or the item itself, null if there is no data.
+	function first(items = true) {
+		if (this.length === 0)
+			return null;
+		if(items)
+			return this.items[0];
+		else
+			return new JQL([this.items[0]]);
+	}
+
+	// Last
+	// Return last element of array as a new JQL or the item itself, null if there is no data.
+	function last(items = true) {
+		if (this.length === 0)
+			return null;
+		if(items)
+			return this.items[this.length - 1];
+		else
+			return new JQL([this.items[this.length - 1]]);
+	}
 	//#endregion
 
 	//#region 📖 Functions: Logging
-	// Dir
-	// console.dir() for items
-	function dir(args = {}) {
-		// Arguments
-		args.items=   ( typeof args.items !== 'undefined')   ? args.items   : true;
-		args.limit=   ( typeof args.limit !== 'undefined')   ? args.limit   : JQL_LOGGING_LIMIT;
-		args.options= ( typeof args.options !== 'undefined') ? args.options : false;
-		let title = 'Dir', info, limit, log;
-		// Console
-		if(typeof args.items === 'boolean' && args.items) {
-			limit = (args.limit < this.length) ? args.limit : this.length;
-			info = `Showing: ${limit} of ${this.length} elements`;
-			log = this.limit(args.limit).items;
+	// Logger
+	// This will log a collapseable (or not) fancy message in the console
+	function logger(collapse, title, limit, jql, content) {
+		// Data
+		let style = "line-height: 1; padding: 10px 20px; font-size: 13px; color: white; background: #10151E url(https://derianandre.com/assets/projects/JQL/JQL-white.svg) no-repeat; background-position: 95% center; background-size: auto 12px;	border-radius: 15px;";
+		title = `%c[JQL] ${title} (${typeof limit === 'number' ? limit : jql.length} / ${jql.length})\t\t`;
+
+		// Collapse
+		if(collapse) {
+			console.groupCollapsed(title, style);
 		} else {
-			info = `Constructor`;
+			console.group(title, style);
+		}
+		content();
+		console.groupEnd();
+
+		// ✅ Return
+		return;
+	}
+
+	// Dir
+	// A *better* console.dir()
+	function dir(args = {
+		collapse: JQL_LOGGING_COLLAPSE,
+		limit:    JQL_LOGGING_LIMIT,
+		items:    JQL_LOGGING_ITEMS,
+		options:  false
+	}) {
+		// Arguments
+		let collapse= args.collapse,
+				items=    args.items,
+				limit=    args.limit,
+				options=  args.options,
+				title =  `Dir  `,
+				log;
+		
+		// Console info
+		if(typeof items === 'boolean' && items) {
+			log = this.limit(limit).items;
+		} else {
 			log = this;
 		}
-		logger(title, info, () => { 
-			console.dir(log, args.options) 
+
+		// Log
+		logger(collapse, title, limit, this, () => {
+			console.dir(log, options) 
 		});
-		// Return
+
+		// ✅ Return
 		return;
 	}
 
 	// Log
-	// console.log() for constructor
-	function log(args = {}) {
+	// A *better* console.log()
+	function log(args = {
+		collapse: JQL_LOGGING_COLLAPSE,
+		limit:    JQL_LOGGING_LIMIT,
+		items:    JQL_LOGGING_ITEMS
+	}) {
 		// Arguments
-		args.items= ( typeof args.items !== 'undefined') ? args.items : true;
-		args.limit= ( typeof args.limit !== 'undefined') ? args.limit : JQL_LOGGING_LIMIT;
-		let title = 'Log', info, limit, log;
-		// Console
-		if(typeof args.items === 'boolean' && args.items) {
-			limit = (args.limit < this.length) ? args.limit : this.length;
-			info = `Showing: ${limit} of ${this.length} elements`;
-			log = this.limit(args.limit).items;
+		let collapse= args.collapse,
+		    items=    args.items,
+		    limit=    args.limit,
+		    title=    `Log  `,
+				log;
+
+		// Console info
+		if(items) {
+			log = this.limit(limit).items;
 		} else {
-			info = `Constructor`;
 			log = this;
 		}
-		logger(title, info, () => { 
+
+		// Log
+		logger(collapse, title, limit, this, () => { 
 			console.log(log);
 		});
-		// Return
+
+		// ✅ Return
 		return;
 	}
 
 	// Table
-	// console.table() for items
-	function table(args = {}) {
+	// A *better* console.table()
+	function table(args = { 
+		collapse: JQL_LOGGING_COLLAPSE,
+		columns: JQL_LOGGING_COLUMNS,
+		limit: JQL_LOGGING_LIMIT
+	}) {
 		// Arguments
-		args.columns= ( typeof args.columns !== 'undefined') ? args.columns : false;
-		args.limit=   ( typeof args.limit !== 'undefined')   ? args.limit   : JQL_LOGGING_LIMIT;
-		// Console
-		let limit = (args.limit < this.length) ? args.limit : this.length,
-				title = 'Table',
-				info  = `Showing: ${limit} of ${this.length} elements`;
-		logger(title, info, () => { 
-			console.table(this.limit(args.limit).items, args.columns);
+		let collapse= args.collapse,
+		    columns=  splitter(args.columns),
+		    limit=    args.limit,
+		    title=    `Table`;
+
+		// Log
+		logger(collapse, title, limit, this, () => { 
+			console.table(this.limit(limit).items, columns);
 		});
-		// Return
+
+		// ✅ Return
 		return;
 	}
 	//#endregion

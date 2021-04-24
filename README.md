@@ -8,6 +8,25 @@ A simple intuitive JSON Query Language inspired by [MySQL](https://www.mysql.com
 **This is a work in progress and not ready for production use.**
 </div>
 
+# JQL and MySQL
+You can do simple queries just like MySQL and it can even be shorter
+```mysql
+SELECT * FROM `data` WHERE `active` = true OR `email` LIKE '%{$email}%' LIMIT 5
+```
+
+With JQL this can be done like this:
+
+```javascript
+// This works:
+JQL(data).select('*').where(`active = true || email ~ ${email}`).limit(5);
+// This also works:
+JQL(data).where(`active = true OR email ~ ${email}`).limit(5);
+// You can remove .select('*') as we already have all the data.
+// You can use: OR or ||, AND or &&
+// Or with a function like this:
+JQL(data).where((i) => { return i.email.contains(email) || i.active == true; }).limit(5);
+```
+
 # Operators
 Supported operators for expressions are very basic. Use a function for a more complex predicate.
 
@@ -18,7 +37,7 @@ Supported operators for expressions are very basic. Use a function for a more co
 
 ## Logical
 
-`&& ||`
+`&& AND || OR`
 
 # Example Data
 ```json
@@ -49,7 +68,7 @@ Carefull with this, is not the same as MYSQL! **The order matters.**
 ```javascript
 JQL(data).select('name, active').where('id > 5 && active == false').limit(5).log();
 ► (0) []
-// Because first .select() will give you an array with two columns and then you are trying to do a where with id that isn't in the array
+// .select() will give you an array with two columns and then you are searching for a key that isn't longer in the array.
 
 JQL(data).where('id > 5 && active == false').select('name, active').limit(5).log();
 ► (5) [
@@ -71,8 +90,13 @@ JQL(data).where('email ~ a && active == false').log();
 
 // With a function
 JQL(data).where((i) => {
-	return (i.email.includes('a') && i.active == false)           // .  notation
-	// return (i['email'].includes('a') && i['active'] == false)  // [] notation
+	// Dot notation (a bit smaller 🤓)
+	return (i.email.includes('a') && i.active == false)
+}).log();
+// Or like this
+JQL(data).where((i) => {
+	// Bracket notation
+	return (i['email'].includes('a') && i['active'] == false)
 }).log();
 
 // Both will have the same result:
@@ -84,50 +108,88 @@ JQL(data).where((i) => {
 ```
 
 ## 📉 Data
-| **Function**                           | **Description**     |
-|----------------------------------------|---------------------|
-| `.data()` or `.array()` or `.result()` | Get the data        |
-| `.count()`                             | Get the data.lenght |
+| **Function**                           | **Description**        |
+|----------------------------------------|------------------------|
+| `.data()` or `.array()` or `.result()` | Return the items       |
+| `.count()`                             | Return the data length |
+| `.first()`                             | Return the first item  |
+| `.last()`                              | Return the last item   |
 
 ### `.data()` or `.array()` or `.result()`
 Get that precious data
 #### Example
 ```javascript
-let result = JQL(JSON).items; // JQL(JSON).data();
+let result = JQL(data).items;
+// Or like this
+let result = JQL(data).data();
+
+// Both will have the same result:
 console.log(result);
 ► (n) [{…}, {…}, {…}, …]
 ```
 
 ### `.count()`
-Get the data.lenght
+Get the data.length
 #### Example
 ```javascript
-result.count(); // console.log(result.lenth);
+let result = JQL(data).length;
+// Or like this
+let result = JQL(data).count();
+
+// Both will have the same result:
+console.log(result);
 ► Length (n)
+```
+
+### `.first()`
+Return the first item as data (true) or constructor (false)
+#### Example
+```javascript
+let result = JQL(data).last(); 
+console.log(result);
+► {id: 1, name: "Waldon Shortell", email: "wshortell0@mediafire.com", gender: "Cis Man", ipv4: "145.153.192.113", …}
+
+let result = JQL(data).last(false); 
+console.log(result);
+► JQL {items: Array(1), length: 1, select: ƒ, where: ƒ, limit: ƒ, …}
+```
+
+### `.last()`
+Return the last item as data (true) or constructor (false)
+#### Example
+```javascript
+let result = JQL(data).last(); 
+console.log(result);
+► {id: 1000, name: "Lusa Ellesworth", email: "lellesworthrr@cmu.edu", gender: "Transfeminine", ipv4: "25.26.80.211", …}
+
+let result = JQL(data).last(false); 
+console.log(result);
+► JQL {items: Array(1), length: 1, select: ƒ, where: ƒ, limit: ƒ, …}
 ```
 
 ## 💻 Logging
 Debug like a pro!
 
-| **Function** | **Description**                 | **Variable** | **Type** | **Default**                               |
-|--------------|---------------------------------|--------------|----------|-------------------------------------------|
-| `.dir()`     | Do a *better* `console.dir()`   | `args`       | `object` | `{ items: true, limit: 10, options: {} }` |
-| `.log()`     | Do a *better* `console.log()`   | `args`       | `object` | `{ items: true, limit: 10 }`              |
-| `.table()`   | Do a *better* `console.table()` | `args`       | `object` | `{ columns: false, limit: 10 }`           |
+| **Function** | **Description**                 | **Variable** | **Type** | **Default**                                               |
+|--------------|---------------------------------|--------------|----------|-----------------------------------------------------------|
+| `.dir()`     | Do a *better* `console.dir()`   | `args`       | `object` | `{ collapse: true, items: true, limit: 10, options: {} }` |
+| `.log()`     | Do a *better* `console.log()`   | `args`       | `object` | `{ collapse: true, items: true, limit: 10 }`              |
+| `.table()`   | Do a *better* `console.table()` | `args`       | `object, string` | `{ collapse: true, columns: false, limit: 10 }`   |
 
 ### `.dir()`
 #### Arguments
-| Argument  | Default   | Type      | Description                                   |
-|-----------|-----------|-----------|-----------------------------------------------|
-| `items`   | `true`    | `boolean` | Log: items (true) / constructor (false)       |
-| `limit`   | `10`      | `integer` | The number of elements that the log will show |
-| `options` | `{}`      | `object`  | Options of console.dir()                      |
+| Argument   | Default   | Type      | Description                                   |
+|------------|-----------|-----------|-----------------------------------------------|
+| `collapse` | `true`    | `boolean` | Collapse the log information                  |
+| `items`    | `true`    | `boolean` | Log items or constructor function             |
+| `limit`    | `10`      | `integer` | The number of elements that the log will show |
+| `options`  | `{}`      | `object`  | Options of console.dir()                      |
 #### Example
 ```javascript
 let result = JQL(JSON).log()
 ► (n) [{…}, {…}, {…}, …]
 
-let result = JQL(JSON).log(false);
+let result = JQL(JSON).log({ items: false });
 ► i {items: Array(4), length: 4, select: ƒ, where: ƒ, data: ƒ, …}
 ```
 
@@ -135,6 +197,7 @@ let result = JQL(JSON).log(false);
 #### Arguments
 | Argument   | Default   | Type      | Description                                   |
 |------------|-----------|-----------|-----------------------------------------------|
+| `collapse` | `true`    | `boolean` | Collapse the log information                  |
 | `items`    | `true`    | `boolean` | Log: items (true) / constructor (false)       |
 | `limit`    | `10`      | `integer` | The number of elements that the log will show |
 #### Example
@@ -142,7 +205,7 @@ let result = JQL(JSON).log(false);
 let result = JQL(JSON).log()
 ► (n) [{…}, {…}, {…}, …]
 
-let result = JQL(JSON).log(false);
+let result = JQL(JSON).log({ items: false });
 ► i {items: Array(4), length: 4, select: ƒ, where: ƒ, data: ƒ, …}
 ```
 
@@ -150,11 +213,12 @@ let result = JQL(JSON).log(false);
 #### Arguments
 | Argument   | Default   | Type            | Description                                   |
 |------------|-----------|-----------------|-----------------------------------------------|
+| `collapse` | `true`    | `boolean`       | Collapse the log information                  |
 | `columns`  | `false`   | `string, array` | Columns of the table to show                  |
 | `limit`    | `10`      | `integer`       | The number of elements that the log will show |
 #### Example
 ```javascript
-let result = JQL(JSON).table(['id', 'email']);
+let result = JQL(JSON).table({ columns: ['id', 'email'] });
 
 | id | email                      |
 |----|----------------------------|

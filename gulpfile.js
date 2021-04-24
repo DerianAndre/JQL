@@ -1,29 +1,37 @@
-var gulp = require('gulp');
-var uglify = require('gulp-uglify');
-var rename = require('gulp-rename');
-var header = require('gulp-header');
+const gulp = require('gulp');
+const uglify = require('gulp-uglify');
+const rename = require('gulp-rename');
+const header = require('gulp-header');
+
+const today = new Date().toLocaleDateString();
+const pkg = require('./package.json');
+const banner = [
+	'/*!',
+	' * JQL (JSON Query Language)',
+	' * <%= pkg.description %>',
+	' * @version    : <%= pkg.version %>',
+	' * @author     : <%= pkg.author %>',
+	' * @repository : <%= pkg.repository.url %>',
+	' * @built      : <%= today %>',
+	' * @license    : <%= pkg.license %>',
+	' */',
+	''
+].join('\n');
 
 gulp.task('build', function (done) {
 	// Package info
-	var today = new Date().toLocaleDateString();
-	var pkg = require('./package.json');
-	var banner = [
-		'/*!',
-		' * JQL (JSON Query Language)',
-		' * <%= pkg.description %>',
-		' * @version    : <%= pkg.version %>',
-		' * @author     : <%= pkg.author %>',
-		' * @repository : <%= pkg.repository.url %>',
-		' * @built      : <%= today %>',
-		' * @license    : <%= pkg.license %>',
-		' */',
-		''
-	].join('\n');
+
 	
 	// Gulp it!
 	gulp.src('./src/*.js')
+		// Full
 		.pipe(header(banner, { pkg : pkg, today: today } ))
 		.pipe(gulp.dest('./dist'))
+		.on('end', function(){ 
+			console.log(`[${today}] [Gulp] JQL Build - Full ✅`); 
+			done();
+		})
+		// Minified
 		.pipe(uglify({
 			mangle: {
 				toplevel: true
@@ -39,10 +47,11 @@ gulp.task('build', function (done) {
 				drop_console: false
 			}
 		}))
+		.pipe(header(banner, { pkg : pkg, today: today } ))
 		.pipe(rename("JQL.min.js"))
 		.pipe(gulp.dest('./dist'))
 		.on('end', function(){ 
-			console.log("Gulp task completed!"); 
+			console.log(`[${today}] [Gulp] JQL Build - Minify ✅`); 
 			done();
 		});
 });

@@ -4,6 +4,7 @@ const operator = '='
 const variable = false;
 
 console.log('DATA')
+console.log('Default limit is 10, lets change it to 20');
 JQL(data).table({ limit: 20 });
 
 // WHERE
