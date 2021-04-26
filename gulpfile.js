@@ -28,7 +28,7 @@ gulp.task('build', function (done) {
 		.pipe(header(banner, { pkg : pkg, today: today } ))
 		.pipe(gulp.dest('./dist'))
 		.on('end', function(){ 
-			console.log(`[${today}] [Gulp] JQL Build - Full ✅`); 
+			console.log(`[${today}] [Gulp] JQL Build - Full \t✅`); 
 			done();
 		})
 		// Minified
@@ -51,7 +51,7 @@ gulp.task('build', function (done) {
 		.pipe(rename("JQL.min.js"))
 		.pipe(gulp.dest('./dist'))
 		.on('end', function(){ 
-			console.log(`[${today}] [Gulp] JQL Build - Minify ✅`); 
+			console.log(`[${today}] [Gulp] JQL Build - Minify \t✅`); 
 			done();
 		});
 });

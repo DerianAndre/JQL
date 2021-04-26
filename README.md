@@ -8,6 +8,8 @@ A simple intuitive JSON Query Language inspired by [MySQL](https://www.mysql.com
 **This is a work in progress and not ready for production use.**
 </div>
 
+---
+
 # JQL and MySQL
 You can do simple queries just like MySQL and it can even be shorter
 ```mysql
@@ -18,13 +20,13 @@ With JQL this can be done like this:
 
 ```javascript
 // This works:
-JQL(data).select('*').where(`active = true || email ~ ${email}`).limit(5);
+JQL(data).select('*').where(`active = true || email ~ "${email}"`).limit(5);
 
 // This also works:
 	// ✅ Smaller footprint 😏
 	// ✅ You can remove .select('*') as we already have all the data 🙄
-	// ✅ You can also use: AND or &&, OR or || 🥵
-JQL(data).where(`active = true OR email ~ ${email}`).limit(5);
+	// ✅ You can also use: "<string>" or '<string>', AND or &&, OR or || 🥵
+JQL(data).where(`active = true OR email ~ '${email}'`).limit(5);
 
 // Or with a function like this:
 JQL(data).where((i) => { 
@@ -32,21 +34,22 @@ JQL(data).where((i) => {
 }).limit(5);
 ```
 
+---
+
 # Operators
 Supported operators for expressions are very basic. Use a function for a more complex predicate.
 
 ## Comparation
-
-`~  =  ==  !=  ===  !==`
+`~ ~~  =  ==  !=  ===  !==`
 `<  >  <=  >=`
-
+**Note:** ~ is insentiive while ~~ is case sensitive.
 ## Logical
 
 `&& AND || OR`
 
 # Example Data
-```json
-[
+```javascript
+const data = [
 	{ "id": 1, "name": "Aleta Nelsen", "email": "anelsen0@printfriendly.com", "active": true },
 	{ "id": 2, "name": "Davidde Madgett", "email": "dmadgett1@youtu.be", "active": true },
 	{ "id": 3, "name": "Monty Gulston", "email": "mgulston2@hostgator.com", "active": true },
@@ -54,8 +57,10 @@ Supported operators for expressions are very basic. Use a function for a more co
 	{ "id": 5, "name": "Kim Guion", "email": "kguion4@youtu.be", "active": false },
 	{ "id": 6, "name": "Tymothy Wingar", "email": "twingar5@usda.gov", "active": false },
 	{ "id": 7, "name": "Carolus Walworche", "email": "cwalworche6@economist.com", "active": false }
+	...
 ]
 ```
+---
 
 # Functions
 
@@ -111,6 +116,8 @@ JQL(data).where((i) => {
 	2: { "id": 7, "name": "Carolus Walworche", "email": "cwalworche6@economist.com", "active": false }
 ]
 ```
+
+---
 
 ## 📉 Data
 | **Function**                           | **Description**        |
@@ -191,10 +198,10 @@ Debug like a pro!
 | `options`  | `{}`      | `object`  | Options of console.dir()                      |
 #### Example
 ```javascript
-let result = JQL(JSON).log()
+let result = JQL(data).log()
 ► (n) [{…}, {…}, {…}, …]
 
-let result = JQL(JSON).log({ items: false });
+let result = JQL(data).log({ items: false });
 ► i {items: Array(4), length: 4, select: ƒ, where: ƒ, data: ƒ, …}
 ```
 
@@ -207,10 +214,10 @@ let result = JQL(JSON).log({ items: false });
 | `limit`    | `10`      | `integer` | The number of elements that the log will show |
 #### Example
 ```javascript
-let result = JQL(JSON).log()
+let result = JQL(data).log()
 ► (n) [{…}, {…}, {…}, …]
 
-let result = JQL(JSON).log({ items: false });
+let result = JQL(data).log({ items: false });
 ► i {items: Array(4), length: 4, select: ƒ, where: ƒ, data: ƒ, …}
 ```
 
@@ -223,7 +230,7 @@ let result = JQL(JSON).log({ items: false });
 | `limit`    | `10`      | `integer`       | The number of elements that the log will show |
 #### Example
 ```javascript
-let result = JQL(JSON).table({ columns: ['id', 'email'] });
+let result = JQL(data).table({ columns: ['id', 'email'] });
 
 | id | email                      |
 |----|----------------------------|
@@ -232,6 +239,7 @@ let result = JQL(JSON).table({ columns: ['id', 'email'] });
 |... | ...                        |
 ► Array (n)
 ```
+---
 
 # Why tho?
 I have another project that I made with an API (express) and MongoDB (mongoose) and I wanted to have offline support when I exported my WebApp with Capacitorjs as an Android "native" App. The problem was that there is no way to have a nodejs server inside the App so I can't use the express API so I figuered out that I can export my DB with a Node command and save it inside my static folder so I can use JSON as an static database right? pretty simple.
