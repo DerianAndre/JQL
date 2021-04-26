@@ -40,9 +40,11 @@ JQL(data).where((i) => {
 Supported operators for expressions are very basic. Use a function for a more complex predicate.
 
 ## Comparation
-`~ ~~  =  ==  !=  ===  !==`
+`~ ~~ ~=  =  ==  !=  ===  !==`
 `<  >  <=  >=`
-**Note:** ~ is insentiive while ~~ is case sensitive.
+
+**Note:** `~` is insensitive while `~~` or `~=` is case sensitive.
+
 ## Logical
 
 `&& AND || OR`

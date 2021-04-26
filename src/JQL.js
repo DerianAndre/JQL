@@ -4,7 +4,7 @@ const JQL_LOGGING_COLUMNS=  false;
 const JQL_LOGGING_COLLAPSE= true;
 const JQL_LOGGING_LIMIT=    false;
 // JQL - Operators
-const JQL_OP_COMPARE= `\~|\~~|\=|\==|\===|\!=|\!==|\<|\>|\<=|\>=`;
+const JQL_OP_COMPARE= `\~|\~~|\~=|\=|\==|\===|\!=|\!==|\<|\>|\<=|\>=`;
 const JQL_OP_LOGICAL= `AND|\&\&|OR|[\|]{2}`;
 const JQL_OPERATORS=  `(\\w+) (${JQL_OP_COMPARE}) (([+-]?([0-9]*[.])?[0-9]+)|\\w+|\'.*\'|\".*\")`;
 const JQL_CONDITIONS= `(?:${JQL_OPERATORS})*(${JQL_OP_LOGICAL})*`;
@@ -93,12 +93,11 @@ const JQL_CONDITIONS= `(?:${JQL_OPERATORS})*(${JQL_OP_LOGICAL})*`;
 		// Convert to string
 		if(/^(\'.*\'|\".*\")$/.test(value)) 	value = String(value.slice(1,-1));
 
-		//(([+-]?([0-9]*[.])?[0-9]+)|\w+|\".*\")
-
 		// Check for operators
 		switch (op) {
 			case '~':		return (element[key].toLowerCase().includes(value.toLowerCase()));
-			case '~~':	return (element[key].includes(value));
+			case '~~':
+			case '~=':	return (element[key].includes(value));
 			case '=':
 			case '==':	return (element[key] ==  value);
 			case '===':	return (element[key] === value);
