@@ -107,3 +107,6 @@ testing/
 
 # Antlr
 src/antlr/bin/*.jar
+
+# Visual Studio
+.vscode/

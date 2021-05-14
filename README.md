@@ -39,7 +39,7 @@ JQL(data).where((i) => {
 # Operators
 Supported operators for expressions are very basic. Use a function for a more complex predicate.
 
-## Comparation
+## Comparasion
 `~ ~~ ~=  =  ==  !=  ===  !==`
 `<  >  <=  >=`
 
