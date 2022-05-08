@@ -3,8 +3,13 @@
   "version": "0.1.0",
   "description": "A simple intuitive JSON Query Language inspired by MySQL and jslinq made in javascript.",
   "main": "src/JQL.js",
-  "author": "DerianAndre",
   "license": "MIT",
+  "author": "DerianAndre",
+  "author": {
+		"name": "Derian Castillo",
+		"email": "hola@derianandre.com",
+		"url": "https://derianandre.com"
+	},
   "repository": {
     "type": "git",
     "url":  "https://github.com/DerianAndre/JQL.git"
