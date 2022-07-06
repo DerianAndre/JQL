@@ -407,7 +407,7 @@ const JQL_CONDITIONS= `(?:${JQL_OPERATORS})*(${JQL_OP_LOGICAL})*`;
 		let result = order.sort(sortAction);
 		
 		// Return for chaining
-		return new jslinq(result);
+		return new JQL(result);
 	}
 	//
 	//#endregion
